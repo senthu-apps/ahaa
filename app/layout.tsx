@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ahaa.ai",
+  title: "AI Weavers",
   description:
-    "Ahaa builds and runs the automations, AI agents and custom software your business needs, for one flat monthly fee. Something ships every week, and you own all of it.",
+    "AI Weavers connects your tools, data and teams into automated workflows, AI agents and custom software, for one flat monthly fee. Something ships every week, and you own all of it.",
 };
 
 export const viewport: Viewport = {

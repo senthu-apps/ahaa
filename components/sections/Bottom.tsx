@@ -1,7 +1,7 @@
 import { Arrow, Icon, Label, LOGO_PATH, SWOOSH_PATH } from "../icons";
 
 const STEPS = [
-  ["01", "Book your Ahaa Session", "A free 30-minute call. We find your three biggest time sinks and show you what we would build first.", "Free, 30 minutes"],
+  ["01", "Book your Weave Session", "A free 30-minute call. We find your three biggest time sinks and show you what we would build first.", "Free, 30 minutes"],
   ["02", "Get your Automation Map", "A written plan ranked by hours saved. It is yours to keep, whether or not you hire us.", "Within two business days"],
   ["03", "Start your retainer", "Pick Core or Scale. Your lead is assigned and work starts the same week.", "Same week"],
   ["04", "Add requests", "Put anything on your board: an automation, an agent, a feature or a fix. Reorder whenever you like.", "Anytime"],
@@ -37,7 +37,7 @@ export function Operators() {
         <div>
           <Label>Who does the work</Label>
           <h2 className="d h2" id="ops-h">Built by operators.</h2>
-          <p className="lead">Ahaa comes from Scale Shift Ventures, the studio behind the companies listed here. We have built, run and sold subscription businesses, so we automate like owners: start with what saves the most time, then keep it running.</p>
+          <p className="lead">AI Weavers comes from Scale Shift Ventures, the studio behind the companies listed here. We have built, run and sold subscription businesses, so we automate like owners: start with what saves the most time, then keep it running.</p>
           <ul className="team">
             <li><Icon name="i-check" />One senior lead who knows your business and answers to you directly</li>
             <li><Icon name="i-check" />Engineers and product designers from the Kimp studio behind them</li>
@@ -46,7 +46,7 @@ export function Operators() {
         </div>
         <div>
           <ul className="cos">
-            <li><h3 className="d">Kimp</h3><span className="tag">Design subscription</span><p>A flat-fee design subscription for brands and agencies. Its design and engineering team builds Ahaa client work.</p></li>
+            <li><h3 className="d">Kimp</h3><span className="tag">Design subscription</span><p>A flat-fee design subscription for brands and agencies. Its design and engineering team builds AI Weavers client work.</p></li>
             <li><h3 className="d">DesignDog.ai</h3><span className="tag">AI design</span><p>AI-powered design software. Brand-ready creative made in minutes, not days.</p></li>
             <li><h3 className="d">Repliers</h3><span className="tag">Data infrastructure</span><p>Real estate MLS data infrastructure. An API that brokerages and proptech products build on.</p></li>
             <li><h3 className="d">Buy.ca</h3><span className="tag">Proptech brokerage</span><p>A Canadian home-buying platform. Cash back toward the down payment and low-commission listings.</p></li>
@@ -155,7 +155,7 @@ export function Start() {
     <section className="band deep start" id="start" aria-labelledby="start-h">
       <div className="wrap start-grid">
         <div>
-          <Label>Book your Ahaa Session</Label>
+          <Label>Book your Weave Session</Label>
           <h2 className="d h2" id="start-h">Tell us what eats your week.</h2>
           <ul className="gets">
             <li><span>01</span>A 30-minute call with a senior lead, not a sales rep</li>
@@ -177,7 +177,7 @@ export function Start() {
               <div className="field full"><label htmlFor="f-msg">Anything we should know? (optional)</label><textarea id="f-msg" name="msg" rows={3} placeholder="The tools you use, what you have tried, what keeps slipping."></textarea></div>
             </div>
             <div className="form-foot">
-              <button className="btn btn-block magnet" type="submit">Request my Ahaa Session
+              <button className="btn btn-block magnet" type="submit">Request my Weave Session
                 <Arrow /></button>
               <p>We reply within one business day. No sales sequence.</p>
             </div>
@@ -185,7 +185,7 @@ export function Start() {
           <div className="done" id="done" hidden tabIndex={-1}>
             <span className="ck"><svg><use href="#i-check" /></svg></span>
             <h3 className="d h3" id="done-h">Request received.</h3>
-            <p id="done-p">We will email you within one business day with times for your Ahaa Session.</p>
+            <p id="done-p">We will email you within one business day with times for your Weave Session.</p>
             <p className="pv">Design preview: this form is not connected yet, so nothing was sent.</p>
           </div>
         </div>
@@ -199,25 +199,25 @@ export function Footer() {
     <footer className="footer" aria-label="Footer">
       <div className="wrap">
         <div className="f-cta">
-          <h2 className="d h2">Ready for your ahaa moment?</h2>
+          <h2 className="d h2">Ready to weave it all together?</h2>
           <div><p>Thirty minutes, three time sinks, one written plan. No obligation.</p>
-            <a className="btn magnet" href="#start">Book your free Ahaa Session
+            <a className="btn magnet" href="#start">Book your free Weave Session
               <Arrow /></a></div>
         </div>
         <div className="f-cols">
-          <div><p className="f-blurb">AI automation, AI agents and custom software for owner-led businesses, on one flat monthly retainer.</p></div>
+          <div><p className="f-blurb">We weave your tools, data and teams into automated workflows, AI agents and custom software for owner-led businesses, on one flat monthly retainer.</p></div>
           <div><h4>Services</h4><ul><li><a href="#services">Automations</a></li><li><a href="#services">AI agents</a></li><li><a href="#services">Custom software</a></li><li><a href="#roi">Cost calculator</a></li></ul></div>
           <div><h4>Firm</h4><ul><li><a href="#how">How it works</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#faq">Questions</a></li><li><a href="#start">Book a session</a></li></ul></div>
-          <div><h4>Contact</h4><div className="mailrow"><span id="mail">hello@ahaa.ai</span><button className="copy" type="button" id="copy-mail">Copy</button></div></div>
+          <div><h4>Contact</h4><div className="mailrow"><span id="mail">hello@aiweavers.ai</span><button className="copy" type="button" id="copy-mail">Copy</button></div></div>
         </div>
         <div className="f-mark" aria-hidden="true">
-          <svg viewBox="0 0 1404 418">
-            <defs><clipPath id="fwipe"><rect id="fwipe-r" x="0" y="0" width="1404" height="418" /></clipPath></defs>
+          <svg viewBox="0 0 1756 283">
+            <defs><clipPath id="fwipe"><rect id="fwipe-r" x="0" y="0" width="1756" height="283" /></clipPath></defs>
             <path fill="#F6F3EC" d={LOGO_PATH} />
             <path fill="#FE6854" clipPath="url(#fwipe)" d={SWOOSH_PATH} />
           </svg>
         </div>
-        <div className="f-bar"><span>© 2026 Ahaa.ai. A Scale Shift Ventures company.</span><span>Ontario, Canada. Serving clients across North America.</span></div>
+        <div className="f-bar"><span>© 2026 AI Weavers. A Scale Shift Ventures company.</span><span>Ontario, Canada. Serving clients across North America.</span></div>
       </div>
     </footer>
   );

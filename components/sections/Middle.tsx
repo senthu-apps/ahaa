@@ -22,7 +22,7 @@ export function Day() {
             <Label>An ordinary Tuesday</Label>
             <h2 className="d h2" id="day-h">A day that runs itself.</h2>
           </div>
-          <p className="lead">This is one business day with Ahaa on retainer. Scroll to move the clock.</p>
+          <p className="lead">This is one business day with AI Weavers on retainer. Scroll to move the clock.</p>
         </div>
         <div className="day-pin" id="day-pin">
           <div className="clock">
@@ -30,7 +30,7 @@ export function Day() {
             <div className="meter" aria-hidden="true"><span id="meter"></span></div>
             <div className="meter-x" aria-hidden="true"><span>7:00 AM</span><span>5:30 PM</span></div>
             <div className="tally">
-              <div><b id="n-done">10</b><span>Handled by Ahaa</span></div>
+              <div><b id="n-done">10</b><span>Handled by AI Weavers</span></div>
               <div className="zero"><b>0</b><span>Done by hand</span></div>
             </div>
           </div>
@@ -91,7 +91,7 @@ export function Race() {
             <p className="lane-status" id="h-status" aria-live="polite"></p>
           </div>
           <div className="lane">
-            <div><p className="lane-name">Ahaa retainer</p><p className="lane-count">Shipped <b id="a-count">12</b></p></div>
+            <div><p className="lane-name">AI Weavers retainer</p><p className="lane-count">Shipped <b id="a-count">12</b></p></div>
             <div className="cells" id="a-cells" aria-hidden="true"></div>
             <p className="lane-status" id="a-status" aria-live="polite"></p>
           </div>
@@ -102,8 +102,8 @@ export function Race() {
           </div>
         </div>
 
-        <div className="cmp" role="table" aria-label="Hourly billing compared with an Ahaa retainer">
-          <div className="r" role="row"><div className="c h a" role="columnheader">Billed by the hour</div><div className="c h b" role="columnheader">On an Ahaa retainer</div></div>
+        <div className="cmp" role="table" aria-label="Hourly billing compared with an AI Weavers retainer">
+          <div className="r" role="row"><div className="c h a" role="columnheader">Billed by the hour</div><div className="c h b" role="columnheader">On an AI Weavers retainer</div></div>
           {COMPARE.map(([a, b]) => (
             <div className="r" role="row" key={a}><div className="c a" role="cell">{a}</div><div className="c b" role="cell">{b}</div></div>
           ))}
@@ -144,13 +144,13 @@ export function Roi() {
             <p className="r-line">Your team spends <b id="x-hrs">32 hours</b> a week on work software could do.</p>
             <p className="r-big"><b id="x-cost">$83,200</b><span>a year spent on busywork</span></p>
             <div className="r-pair">
-              <div><b id="x-back">$49,920</b><span>Ahaa could win back each year</span></div>
+              <div><b id="x-back">$49,920</b><span>AI Weavers could win back each year</span></div>
               <div><b id="x-time">19 hrs</b><span>back every week</span></div>
             </div>
-            <p className="r-verdict" id="x-verdict">The Core retainer costs $42,000 a year. Every $1 returns about <b>$1.19</b>. It pays for itself once Ahaa wins back 17 hours a week.</p>
+            <p className="r-verdict" id="x-verdict">The Core retainer costs $42,000 a year. Every $1 returns about <b>$1.19</b>. It pays for itself once AI Weavers wins back 17 hours a week.</p>
             <a className="btn btn-block" href="#start">Check these numbers on a free call
               <Arrow /></a>
-            <p className="r-note">Assumes 60% of these hours can be automated. We measure your real numbers in the Ahaa Session.</p>
+            <p className="r-note">Assumes 60% of these hours can be automated. We measure your real numbers in the Weave Session.</p>
           </div>
         </div>
       </div>

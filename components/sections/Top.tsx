@@ -10,9 +10,9 @@ export function Nav() {
           <li><a href="#pricing">Pricing</a></li>
           <li><a href="#faq">Questions</a></li>
         </ul>
-        <a className="brand" href="#top" aria-label="Ahaa, back to top">
-          <svg viewBox="0 0 1404 418" role="img" aria-label="Ahaa">
-            <defs><clipPath id="navwipe"><rect id="navwipe-r" x="0" y="0" width="1404" height="418" /></clipPath></defs>
+        <a className="brand" href="#top" aria-label="AI Weavers, back to top">
+          <svg viewBox="0 0 1756 283" role="img" aria-label="AI Weavers">
+            <defs><clipPath id="navwipe"><rect id="navwipe-r" x="0" y="0" width="1756" height="283" /></clipPath></defs>
             <path fill="#224AC0" d={LOGO_PATH} />
             <path fill="#FE6854" clipPath="url(#navwipe)" d={SWOOSH_PATH} />
           </svg>
@@ -56,9 +56,9 @@ export function Hero() {
         <div>
           <p className="kicker" data-intro=""><span className="pulse" aria-hidden="true"></span>AI automation, agents and custom software, on retainer</p>
           <h1 className="d" id="hero-title">Stop doing<br /> work software<br /> should do.</h1>
-          <p className="lead" data-intro="">Ahaa builds and runs the automations, AI agents and custom software your business needs, for one flat monthly fee. Something new ships every week, and you own all of it.</p>
+          <p className="lead" data-intro="">AI Weavers ties your apps, data and people together, then builds and runs the automated workflows, AI agents and custom software your business needs, for one flat monthly fee. Something new ships every week, and you own all of it.</p>
           <div className="cta-row" data-intro="">
-            <a className="btn magnet" href="#start">Book your free Ahaa Session
+            <a className="btn magnet" href="#start">Book your free Weave Session
               <Arrow /></a>
             <a className="ulink" href="#pricing">See pricing</a>
           </div>
@@ -71,7 +71,7 @@ export function Hero() {
           </ul>
         </div>
 
-        <div className="ledger" data-intro="" aria-label="Illustrative example of a morning handled by Ahaa">
+        <div className="ledger" data-intro="" aria-label="Illustrative example of a morning handled by AI Weavers">
           <div className="ledger-in">
             <div className="l-head"><span className="l-title">What lands on your desk</span><span className="tag">Illustrative example</span></div>
             <ul className="l-rows" id="l-rows">
@@ -80,7 +80,7 @@ export function Hero() {
               ))}
             </ul>
           </div>
-          <div className="l-mid"><span className="agent-pill"><span className="ring" aria-hidden="true"></span><Icon name="sw" />Ahaa agents at work</span></div>
+          <div className="l-mid"><span className="agent-pill"><span className="ring" aria-hidden="true"></span><Icon name="sw" />Weaver agents at work</span></div>
           <div className="ledger-wrap-out">
             <div className="ledger-out">
               <p className="o-kick">Your morning, by 9:02 AM</p>
@@ -141,7 +141,7 @@ export function Thesis() {
       <div className="wrap thesis-grid">
         <div><Label id="why-h">Why a retainer</Label></div>
         <div>
-          <p className="thesis-text" id="thesis">Hourly billing pays agencies more when work goes slowly. AI has made building software many times faster, and that speed belongs to you. So Ahaa charges one flat monthly fee, ships something every week, and hands you the keys to everything we build.</p>
+          <p className="thesis-text" id="thesis">Hourly billing pays agencies more when work goes slowly. AI has made building software many times faster, and that speed belongs to you. So AI Weavers charges one flat monthly fee, ships something every week, and hands you the keys to everything we build.</p>
           <div className="thesis-foot">
             <a className="ulink" href="#compare">Compare it with hourly work</a>
             <p>Retained like a firm. Priced like a subscription.</p>

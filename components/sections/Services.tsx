@@ -58,7 +58,7 @@ export function Services() {
                 <div className="flow-wrap"><span className="flow-line" aria-hidden="true"></span><span className="flow-fill" aria-hidden="true"></span>
                   <ol className="flow">
                     <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Payment email arrives</span><span className="sys">Inbox</span></li>
-                    <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Matched to invoice 1047</span><span className="sys">Ahaa</span></li>
+                    <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Matched to invoice 1047</span><span className="sys">Weavers</span></li>
                     <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Invoice marked paid</span><span className="sys">QuickBooks</span></li>
                     <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Receipt sent to the customer</span><span className="sys">Email</span></li>
                   </ol></div>
