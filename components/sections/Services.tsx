@@ -2,7 +2,7 @@ import { Icon, Label } from "../icons";
 
 const TABS = [
   ["Automations", "Your tools pass work to each other, so nobody copies and pastes."],
-  ["AI agents", "AI that answers, sorts, drafts, calls and follows up. A person approves what matters."],
+  ["AI agents", "AI that answers calls, sorts email, drafts replies and follows up. A person approves what matters."],
   ["Custom software", "Portals, dashboards and internal apps shaped around how you actually work."],
   ["Care and upkeep", "Hosting, monitoring and fixes for everything we build, inside the fee."],
 ];
@@ -57,10 +57,10 @@ export function Services() {
                   <Replay /></div>
                 <div className="flow-wrap"><span className="flow-line" aria-hidden="true"></span><span className="flow-fill" aria-hidden="true"></span>
                   <ol className="flow">
-                    <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Payment email arrives</span><span className="sys">Inbox</span></li>
-                    <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Matched to invoice 1047</span><span className="sys">Weavers</span></li>
+                    <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">E-transfer notice arrives</span><span className="sys">Inbox</span></li>
+                    <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Matched to INV-1048</span><span className="sys">Weavers</span></li>
                     <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Invoice marked paid</span><span className="sys">QuickBooks</span></li>
-                    <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Receipt sent to the customer</span><span className="sys">Email</span></li>
+                    <li className="on"><span className="dot"><svg><use href="#i-check" /></svg></span><span className="txt">Receipt sent to the client</span><span className="sys">Email</span></li>
                   </ol></div>
                 <div className="meta"><span><Icon name="i-check" />Runs around the clock</span><span><Icon name="i-check" />Every step logged</span><span><Icon name="i-check" />We are alerted if a step fails</span></div>
               </div>
@@ -69,22 +69,22 @@ export function Services() {
             {/* agents */}
             <div className="svc-panel" role="tabpanel" id="pan-1" aria-labelledby="tab-1" tabIndex={0} hidden>
               <p>Agents work inside the tools you already use. They read, look things up and prepare the work. Your people stay in charge of the decisions.</p>
-              <ul className="ex"><li>Orders drafted from customer emails</li><li>New leads called and qualified</li><li>Staff questions answered from company data</li></ul>
+              <ul className="ex"><li>Replies drafted from client emails</li><li>New inquiries answered and booked</li><li>Staff questions answered from company data</li></ul>
               <div className="demo" data-demo="agent">
-                <div className="demo-top"><span className="l-title">Order agent</span>
+                <div className="demo-top"><span className="l-title">Inbox agent</span>
                   <Replay /></div>
-                <div className="mail"><p className="mail-h">From Dana, Northline Supply · 8:12 AM</p><p>Can you book a pickup Tuesday? Three skids going to Ottawa.</p></div>
+                <div className="mail"><p className="mail-h">From Dana, Patel Renovations · 8:12 AM</p><p>Here are our Q1 bank statements. Can we get HST filed by the 30th?</p></div>
                 <div className="agent">
                   <ul className="steps">
                     <li className="on"><Check />Read the email</li>
-                    <li className="on"><Check />Found the customer account</li>
-                    <li className="on"><Check />Checked Tuesday pickups</li>
-                    <li className="on"><Check />Drafted order 2231</li>
+                    <li className="on"><Check />Found the client file</li>
+                    <li className="on"><Check />Listed what is missing</li>
+                    <li className="on"><Check />Drafted a reply</li>
                   </ul>
                   <div className="draft">
-                    <h4>Order 2231 is ready for review</h4>
-                    <dl><dt>Customer</dt><dd>Northline Supply</dd><dt>Pickup</dt><dd>Tue, 9:00 AM</dd><dt>Load</dt><dd>3 skids</dd><dt>Deliver to</dt><dd>Ottawa, ON</dd></dl>
-                    <div className="approve-row"><button className="btn btn-cobalt btn-sm" type="button" id="approve">Approve order</button>
+                    <h4>Reply to Dana is ready for review</h4>
+                    <dl><dt>Client</dt><dd>Patel Renovations</dd><dt>Received</dt><dd>Q1 statements</dd><dt>Missing</dt><dd>2 receipts</dd><dt>Due</dt><dd>HST return, Apr 30</dd></dl>
+                    <div className="approve-row"><button className="btn btn-cobalt btn-sm" type="button" id="approve">Approve reply</button>
                       <p id="approve-note" aria-live="polite">Nothing is sent until a person approves.</p></div>
                   </div>
                 </div>
@@ -94,22 +94,22 @@ export function Services() {
             {/* custom software */}
             <div className="svc-panel" role="tabpanel" id="pan-2" aria-labelledby="tab-2" tabIndex={0} hidden>
               <p>When off-the-shelf software forces you to work its way, we build yours. Engineers build it, product designers make it easy to use.</p>
-              <ul className="ex"><li>Client portals with e-signing</li><li>Dispatch and job boards</li><li>Field apps with QR job cards</li></ul>
+              <ul className="ex"><li>Client portals with e-signing</li><li>Deal and file trackers</li><li>Field apps with photo job cards</li></ul>
               <div className="demo" data-demo="dash">
-                <div className="demo-top"><span className="l-title"><span className="live" aria-hidden="true"></span>Dispatch board</span>
+                <div className="demo-top"><span className="l-title"><span className="live" aria-hidden="true"></span>Job board</span>
                   <Replay /></div>
                 <div className="kpis">
-                  <div className="kpi"><span>Orders today</span><b data-n="48">48</b></div>
+                  <div className="kpi"><span>Open jobs</span><b data-n="48">48</b></div>
                   <div className="kpi"><span>On time</span><b data-n="97" data-suf="%">97%</b></div>
                   <div className="kpi"><span>Unpaid</span><b data-n="3.2" data-pre="$" data-suf="k" data-dec="1">$3.2k</b></div>
                 </div>
                 <div className="tbl-wrap"><table className="tbl">
-                  <thead><tr><th scope="col">Order</th><th scope="col">Customer</th><th scope="col">Status</th></tr></thead>
+                  <thead><tr><th scope="col">Job</th><th scope="col">Customer</th><th scope="col">Status</th></tr></thead>
                   <tbody>
-                    <tr><td>2231</td><td>Northline Supply</td><td><span className="st st-a">Picked up</span></td></tr>
-                    <tr><td>2230</td><td>Harbour Foods</td><td><span className="st st-b">In transit</span></td></tr>
-                    <tr><td>2229</td><td>Ridgeview Build</td><td><span className="st st-c">Delivered</span></td></tr>
-                    <tr><td>2228</td><td>Maple Clinic</td><td><span className="st st-d">Invoiced</span></td></tr>
+                    <tr><td>2231</td><td>Nguyen residence</td><td><span className="st st-a">Booked</span></td></tr>
+                    <tr><td>2230</td><td>Brant St Bakery</td><td><span className="st st-b">Tech on site</span></td></tr>
+                    <tr><td>2229</td><td>Okafor residence</td><td><span className="st st-c">Complete</span></td></tr>
+                    <tr><td>2228</td><td>Harris residence</td><td><span className="st st-d">Invoiced</span></td></tr>
                   </tbody>
                 </table></div>
                 <p className="sample">Sample data</p>
@@ -126,8 +126,8 @@ export function Services() {
                 <div className="care">
                   <ul className="health">
                     <li><span className="live" aria-hidden="true"></span>Invoice matcher<small>1,284 runs</small></li>
-                    <li><span className="live" aria-hidden="true"></span>Order agent<small>412 drafts</small></li>
-                    <li><span className="live" aria-hidden="true"></span>Lead caller<small>96 calls</small></li>
+                    <li><span className="live" aria-hidden="true"></span>Inbox agent<small>412 drafts</small></li>
+                    <li><span className="live" aria-hidden="true"></span>Phone agent<small>96 calls</small></li>
                     <li><span className="live" aria-hidden="true"></span>Client portal<small>99.98% up</small></li>
                   </ul>
                   <div className="bars">

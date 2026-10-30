@@ -37,7 +37,7 @@ export function Operators() {
         <div>
           <Label>Who does the work</Label>
           <h2 className="d h2" id="ops-h">Built by operators.</h2>
-          <p className="lead">AI Weavers comes from Scale Shift Ventures, the studio behind the companies listed here. We have built, run and sold subscription businesses, so we automate like owners: start with what saves the most time, then keep it running.</p>
+          <p className="lead">AI Weavers comes from Scale Shift Ventures, the studio behind the companies listed here. We run a home-buying platform, an MLS data company and a design subscription, and we built and sold a SaaS business. So we automate like owners: start with what saves the most time, then keep it running.</p>
           <ul className="team">
             <li><Icon name="i-check" />One senior lead who knows your business and answers to you directly</li>
             <li><Icon name="i-check" />Engineers and product designers from the Kimp studio behind them</li>
@@ -121,12 +121,15 @@ export function Pricing() {
 }
 
 const FAQS = [
-  ["What counts as a request?", "One clear piece of work: an automation, an AI agent, a feature, a report or a fix. Bigger projects are split into weekly pieces, so you see progress every week."],
+  ["What counts as a request?", "One clear piece of work, like a text-back for missed calls, a reminder that chases missing documents, an AI agent, a report or a fix. Bigger projects are split into weekly pieces, so you see progress every week."],
   ["Who actually does the work?", "A senior lead owns your account and talks to you directly. Engineers and product designers from the Kimp studio build with them. AI speeds up the building, and people review every change before it goes live."],
   ["Which AI models do you use?", "Whatever fits the job best. We build on Claude, OpenAI, Gemini and open models, and switch when a better one arrives. You are never locked to one vendor."],
   ["How soon will something be live?", "We aim to put your first automation live in the first week of your retainer, starting with the item on your Automation Map that saves the most hours."],
   ["What happens if I pause or cancel?", "You keep everything we built, with notes on how it works. Resume anytime and we pick up where we left off."],
   ["Are AI and software costs included?", "Our work, hosting and upkeep are included. Outside costs like AI usage, text messages or paid software seats are billed at cost, with no markup."],
+  ["Does anything go out without our approval?", "Only what you choose. Client emails, documents, filings and payments wait for a person on your team to approve them. Routine steps, like a reminder or a receipt, can run on their own once you trust them. Every action is logged."],
+  ["Is client information kept confidential?", "Yes. Agents only see the systems and files you approve, and we are happy to sign your confidentiality agreement before we start. We work within the rules you already follow, like FINTRAC records, trust accounting and CRA deadlines, and your team stays responsible for compliance. Agents are set up not to give legal, tax or mortgage advice. That stays with your lawyers, brokers and accountants."],
+  ["Do we have to switch software?", "No. We build on what you already run, like your CRM, practice management, accounting and job software. If a tool cannot be connected, we tell you in the Weave Session."],
   ["Where does my data live?", "In your own accounts wherever possible. When we host something, you choose the region, including Canada or the US. Agents only see the systems you approve."],
 ];
 
@@ -169,12 +172,12 @@ export function Start() {
               <div className="field"><label htmlFor="f-name">Your name</label><input id="f-name" name="name" autoComplete="name" placeholder="Jordan Lee" required /></div>
               <div className="field"><label htmlFor="f-email">Work email</label><input id="f-email" name="email" type="email" autoComplete="email" placeholder="jordan@company.com" required />
                 <p className="err" id="f-email-err" hidden>Enter your work email so we can reply.</p></div>
-              <div className="field"><label htmlFor="f-co">Company</label><input id="f-co" name="company" autoComplete="organization" placeholder="Northline Supply" /></div>
+              <div className="field"><label htmlFor="f-co">Company</label><input id="f-co" name="company" autoComplete="organization" placeholder="Lakeshore & Co." /></div>
               <div className="field"><label htmlFor="f-size">Team size</label>
                 <select id="f-size" name="size" defaultValue="11 to 25"><option>1 to 10</option><option>11 to 25</option><option>26 to 50</option><option>51 to 200</option><option>More than 200</option></select></div>
               <div className="field full"><label htmlFor="f-sink">Biggest time sink</label>
-                <select id="f-sink" name="sink"><option>Typing data between systems</option><option>Invoicing and collections</option><option>Answering customer questions</option><option>Reports and spreadsheets</option><option>Scheduling and follow-ups</option><option>Something else</option></select></div>
-              <div className="field full"><label htmlFor="f-msg">Anything we should know? (optional)</label><textarea id="f-msg" name="msg" rows={3} placeholder="The tools you use, what you have tried, what keeps slipping."></textarea></div>
+                <select id="f-sink" name="sink"><option>Typing data between systems</option><option>Invoicing and collections</option><option>Answering client questions</option><option>Reports and spreadsheets</option><option>Chasing documents and signatures</option><option>New inquiries and bookings</option><option>Something else</option></select></div>
+              <div className="field full"><label htmlFor="f-msg">Anything we should know? (optional)</label><textarea id="f-msg" name="msg" rows={3} placeholder="Your tools (CRM, QuickBooks, practice or job software), what you have tried, what keeps slipping."></textarea></div>
             </div>
             <div className="form-foot">
               <button className="btn btn-block magnet" type="submit">Request my Weave Session

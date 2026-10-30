@@ -36,16 +36,16 @@ export function Nav() {
 }
 
 const LEDGER_ROWS = [
-  ["RE: Pickup Tue, 3 skids to Ottawa", "Unread"],
-  ["Stripe payout · 3,902.15", "Unmatched"],
-  ["Web form · new lead, Burlington", "No reply, 2h"],
+  ["Listing inquiry · 42 Elm St, Oakville", "No reply, 2h"],
+  ["Mortgage file · T4s and pay stubs", "Unfiled"],
+  ["Retainer deposit · 3,500.00", "Unmatched"],
   ["INV-1052 · 14 days overdue", "Past due"],
 ];
 
 const LEDGER_OUT = [
-  "Order 2231 drafted and waiting for your approval",
-  "Payout matched to invoice 1047 and marked paid",
-  "Lead called, qualified and booked for Thursday 10:00",
+  "Buyer lead qualified and showing booked for Thursday 10:00",
+  "Mortgage docs checked, filed and missing NOA requested",
+  "Deposit matched to client 1047 and receipt sent",
   "Reminder sent for INV-1052 with a payment link",
 ];
 
@@ -56,7 +56,7 @@ export function Hero() {
         <div>
           <p className="kicker" data-intro=""><span className="pulse" aria-hidden="true"></span>AI automation, agents and custom software, on retainer</p>
           <h1 className="d" id="hero-title">Stop doing<br /> work software<br /> should do.</h1>
-          <p className="lead" data-intro="">AI Weavers ties your apps, data and people together, then builds and runs the automated workflows, AI agents and custom software your business needs, for one flat monthly fee. Something new ships every week, and you own all of it.</p>
+          <p className="lead" data-intro="">AI Weavers ties your apps, data and people together, then builds and runs the automated workflows, AI agents and custom software your business needs, for one flat monthly fee. AI does the busywork and your team approves what matters. Something new ships every week, and you own all of it.</p>
           <div className="cta-row" data-intro="">
             <a className="btn magnet" href="#start">Book your free Weave Session
               <Arrow /></a>
@@ -101,14 +101,13 @@ export function Hero() {
 }
 
 const INDUSTRIES = [
-  "Logistics and freight",
-  "Professional services",
-  "Real estate",
-  "Clinics and health",
+  "Real estate brokerages and teams",
+  "Mortgage brokerages",
+  "Law firms",
+  "Creative and marketing agencies",
+  "Subscription products and services",
+  "Accounting and bookkeeping firms",
   "Trades and field service",
-  "Agencies",
-  "Distribution",
-  "Property management",
 ];
 
 export function Industries() {
@@ -141,7 +140,7 @@ export function Thesis() {
       <div className="wrap thesis-grid">
         <div><Label id="why-h">Why a retainer</Label></div>
         <div>
-          <p className="thesis-text" id="thesis">Hourly billing pays agencies more when work goes slowly. AI has made building software many times faster, and that speed belongs to you. So AI Weavers charges one flat monthly fee, ships something every week, and hands you the keys to everything we build.</p>
+          <p className="thesis-text" id="thesis">Hourly billing pays dev shops more when the work goes slowly. AI has made building software many times faster, and that speed belongs to you. So AI Weavers charges one flat monthly fee, ships something every week, and hands you the keys to everything we build.</p>
           <div className="thesis-foot">
             <a className="ulink" href="#compare">Compare it with hourly work</a>
             <p>Retained like a firm. Priced like a subscription.</p>
