@@ -177,11 +177,13 @@ export function Start() {
                 <select id="f-size" name="size" defaultValue="11 to 25"><option>1 to 10</option><option>11 to 25</option><option>26 to 50</option><option>51 to 200</option><option>More than 200</option></select></div>
               <div className="field full"><label htmlFor="f-sink">Biggest time sink</label>
                 <select id="f-sink" name="sink"><option>Typing data between systems</option><option>Invoicing and collections</option><option>Answering client questions</option><option>Reports and spreadsheets</option><option>Chasing documents and signatures</option><option>New inquiries and bookings</option><option>Something else</option></select></div>
+              <div className="hp" aria-hidden="true"><label htmlFor="f-web">Website</label><input id="f-web" name="website" tabIndex={-1} autoComplete="off" /></div>
               <div className="field full"><label htmlFor="f-msg">Anything we should know? (optional)</label><textarea id="f-msg" name="msg" rows={3} placeholder="Your tools (CRM, QuickBooks, practice or job software), what you have tried, what keeps slipping."></textarea></div>
             </div>
             <div className="form-foot">
               <button className="btn btn-block magnet" type="submit">Request my Weave Session
                 <Arrow /></button>
+              <p className="err" id="lead-err" role="alert" hidden>Your request did not go through. Please try again in a minute.</p>
               <p>We reply within one business day. No sales sequence.</p>
             </div>
           </form>
@@ -189,7 +191,6 @@ export function Start() {
             <span className="ck"><svg><use href="#i-check" /></svg></span>
             <h3 className="d h3" id="done-h">Request received.</h3>
             <p id="done-p">We will email you within one business day with times for your Weave Session.</p>
-            <p className="pv">Design preview: this form is not connected yet, so nothing was sent.</p>
           </div>
         </div>
       </div>
@@ -211,7 +212,6 @@ export function Footer() {
           <div><p className="f-blurb">We weave your tools, data and teams into automated workflows, AI agents and custom software for owner-led businesses, on one flat monthly retainer.</p></div>
           <div><h4>Services</h4><ul><li><a href="#services">Automations</a></li><li><a href="#services">AI agents</a></li><li><a href="#services">Custom software</a></li><li><a href="#roi">Cost calculator</a></li></ul></div>
           <div><h4>Firm</h4><ul><li><a href="#how">How it works</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#faq">Questions</a></li><li><a href="#start">Book a session</a></li></ul></div>
-          <div><h4>Contact</h4><div className="mailrow"><span id="mail">hello@aiweavers.ai</span><button className="copy" type="button" id="copy-mail">Copy</button></div></div>
         </div>
         <div className="f-mark" aria-hidden="true">
           <svg viewBox="0 0 1756 283">
