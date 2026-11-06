@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "AI Weavers | AI automation for owner-led businesses",
   description:
-    "Automations, AI agents and custom software for brokerages, law and accounting firms, agencies, subscriptions and trades. One flat fee. You approve what matters.",
+    "Automations, AI agents and custom software for brokerages, law and accounting firms, agencies, subscriptions and trades. A fixed setup fee, then a flat monthly retainer. You approve what matters.",
 };
 
 export const viewport: Viewport = {

@@ -4,7 +4,7 @@ const TABS = [
   ["Automations", "Your tools pass work to each other, so nobody copies and pastes."],
   ["AI agents", "AI that answers calls, sorts email, drafts replies and follows up. A person approves what matters."],
   ["Custom software", "Portals, dashboards and internal apps shaped around how you actually work."],
-  ["Care and upkeep", "Hosting, monitoring and fixes for everything we build, inside the fee."],
+  ["Care and upkeep", "Hosting, monitoring and fixes for everything we build, inside the retainer."],
 ];
 
 function Check() {
@@ -24,9 +24,9 @@ export function Services() {
         <div className="sec-head">
           <div>
             <Label>What we build</Label>
-            <h2 className="d h2" id="svc-h">One retainer. Everything your operations run on.</h2>
+            <h2 className="d h2" id="svc-h">One team. Everything your operations run on.</h2>
           </div>
-          <p className="lead">Put anything on your board. If it saves your team time, it gets built, launched and looked after.</p>
+          <p className="lead">Tell us what slows your team down. If it saves them time, it gets quoted, built, launched and looked after.</p>
         </div>
 
         <div className="svc">

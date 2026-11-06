@@ -2,10 +2,10 @@ import { Arrow, Icon, Label, LOGO_PATH, SWOOSH_PATH } from "../icons";
 
 const STEPS = [
   ["01", "Book your Weave Session", "A free 30-minute call. We find your three biggest time sinks and show you what we would build first.", "Free, 30 minutes"],
-  ["02", "Get your Automation Map", "A written plan ranked by hours saved. It is yours to keep, whether or not you hire us.", "Within two business days"],
-  ["03", "Start your retainer", "Pick Core or Scale. Your lead is assigned and work starts the same week.", "Same week"],
-  ["04", "Add requests", "Put anything on your board: an automation, an agent, a feature or a fix. Reorder whenever you like.", "Anytime"],
-  ["05", "Ship weekly, run for good", "Working software every week. We monitor, fix and improve it for as long as you are with us.", "Every week"],
+  ["02", "Get your Automation Map", "A written plan ranked by hours saved, with a fixed price for each project. It is yours to keep, whether or not you hire us.", "Within two business days"],
+  ["03", "Approve your first project", "Half the setup fee starts the build. Your lead is assigned and work starts the same week.", "Same week"],
+  ["04", "Go live", "We build it, test it and launch it. The second half of the setup fee is due, and your retainer starts.", "At launch"],
+  ["05", "Keep it running", "We host, monitor, fix and improve it for as long as you are with us. When you find the next thing to fix, it gets its own quote.", "Every month"],
 ];
 
 export function Process() {
@@ -15,9 +15,9 @@ export function Process() {
         <div className="sec-head">
           <div>
             <Label>How it works</Label>
-            <h2 className="d h2" id="how-h">From first call to first automation in a week.</h2>
+            <h2 className="d h2" id="how-h">From first call to a fixed price, then live.</h2>
           </div>
-          <p className="lead">No discovery phase you pay for. No statement of work to negotiate. You talk to us, then things start getting done.</p>
+          <p className="lead">No discovery phase you pay for. No hourly billing. You talk to us, you get a price, then things start getting done.</p>
         </div>
         <div className="proc-wrap"><span className="proc-line" aria-hidden="true"></span><span className="proc-fill" aria-hidden="true" id="proc-fill"></span>
           <ol className="proc">
@@ -60,11 +60,50 @@ export function Operators() {
 }
 
 const CLAUSES = [
-  ["Pause or cancel anytime", "No long contracts. Pause when the list is empty, resume when it is not."],
-  ["You own everything", "Code, workflows, accounts and data are yours from day one."],
-  ["Weekly delivery", "Working software every week, instead of status reports."],
-  ["Upkeep included", "We host, monitor and fix what we build as part of the fee."],
+  ["Fixed price per project", "Quoted after your free Weave Session. Half up front, half at launch."],
+  ["Three-month minimum", "The retainer runs for three months, then month to month."],
+  ["You own your data and the work", "It runs on our infrastructure. Cancel the retainer and we hand over an export, and it stops running on ours."],
+  ["Upkeep in the retainer", "Hosting, monitoring and fixes for what we build are part of the monthly fee."],
   ["Outside costs at cost", "AI usage and paid software seats are passed through with no markup."],
+];
+
+const PLANS = [
+  {
+    id: "growth",
+    tone: "core",
+    btn: "btn btn-ink btn-block",
+    name: "Growth",
+    fit: "For a business with one clear area to fix.",
+    badge: "The usual starting point",
+    price: "$1,495",
+    level: 1,
+    running: "A full workflow stack or an AI agent",
+    incl: ["Hosting, monitoring and fixes", "A few hours of improvements a month", "Monthly hours-saved report"],
+  },
+  {
+    id: "pro",
+    tone: "core",
+    btn: "btn btn-ink btn-block",
+    name: "Pro",
+    fit: "For a business that runs on what we build.",
+    badge: "Adds priority",
+    price: "$2,995",
+    level: 2,
+    running: "Custom software and several agents",
+    incl: ["Everything in Growth", "Priority in the queue", "Monthly review with your lead"],
+  },
+  {
+    id: "scale",
+    tone: "scale",
+    btn: "btn btn-block",
+    name: "Scale",
+    fit: "For a business ready to rebuild how it runs.",
+    badge: "Adds a strategist",
+    price: "$4,995",
+    level: 3,
+    running: "Several systems across your teams",
+    incl: ["Everything in Pro", "More improvement hours each month", "Monthly roadmap session with a strategist", "AI usage reporting across your tools"],
+  },
 ];
 
 export function Pricing() {
@@ -74,38 +113,49 @@ export function Pricing() {
         <div className="sec-head">
           <div>
             <Label>Pricing</Label>
-            <h2 className="d h2" id="price-h">Two retainers. Prices on the page.</h2>
+            <h2 className="d h2" id="price-h">Pay once to build. Pay monthly to keep it running.</h2>
           </div>
-          <p className="lead">No quotes, no hourly rates and no surprises on the invoice. Pick the pace that fits your list.</p>
+          <p className="lead">No hourly rates and no surprises on the invoice. Each project gets a fixed price, then a flat retainer looks after it.</p>
+        </div>
+
+        <article className="fee" aria-labelledby="fee-setup">
+          <div>
+            <span className="fee-n">01</span>
+            <h3 className="d" id="fee-setup">Setup fee</h3>
+            <div className="price"><b className="tnum">$3,000&ndash;$15,000</b><span>once per project, USD</span></div>
+          </div>
+          <p>A fixed price for each project, quoted after your free Weave Session. You pay half up front and half at launch.</p>
+        </article>
+
+        <div className="plans-h">
+          <span className="fee-n">02</span>
+          <h3 className="d">Monthly retainer</h3>
+          <p>Starts at launch. Hosting, monitoring, fixes and small improvements. It runs on our systems, so the retainer is what keeps it switched on.</p>
         </div>
         <div className="plans">
-          <article className="plan core" aria-labelledby="p-core">
-            <div className="plan-top"><div><h3 className="d" id="p-core">Core</h3><p className="fit">For a business with a clear list of things to fix.</p></div><span className="badge">The usual starting point</span></div>
-            <div className="price"><b className="tnum">$3,500</b><span>per month, USD</span></div>
-            <p className="cap"><i aria-hidden="true"></i>One request in progress at a time</p>
-            <ul className="incl">
-              <li><Icon name="i-check" />Automations, AI agents and custom software</li>
-              <li><Icon name="i-check" />Something shipped every week</li>
-              <li><Icon name="i-check" />Hosting and upkeep for everything we build</li>
-              <li><Icon name="i-check" />Monthly review call with your lead</li>
-              <li><Icon name="i-check" />Shared request board</li>
-            </ul>
-            <a className="btn btn-ink btn-block" href="#start">Start with Core</a>
-          </article>
-          <article className="plan scale" aria-labelledby="p-scale">
-            <div className="plan-top"><div><h3 className="d" id="p-scale">Scale</h3><p className="fit">For a business ready to rebuild how it runs.</p></div><span className="badge">Twice the capacity</span></div>
-            <div className="price"><b className="tnum">$6,500</b><span>per month, USD</span></div>
-            <p className="cap"><i aria-hidden="true"></i>Two requests in progress at a time</p>
-            <ul className="incl">
-              <li><Icon name="i-check" />Everything in Core</li>
-              <li><Icon name="i-check" />Priority in the queue</li>
-              <li><Icon name="i-check" />Monthly roadmap session with a strategist</li>
-              <li><Icon name="i-check" />Larger builds like portals and internal apps</li>
-              <li><Icon name="i-check" />AI usage reporting across your tools</li>
-            </ul>
-            <a className="btn btn-block" href="#start">Start with Scale</a>
-          </article>
+          {PLANS.map((plan) => (
+            <article className={`plan ${plan.tone}`} aria-labelledby={`p-${plan.id}`} key={plan.id}>
+              <div className="plan-top"><div><h3 className="d" id={`p-${plan.id}`}>{plan.name}</h3><p className="fit">{plan.fit}</p></div><span className="badge">{plan.badge}</span></div>
+              <div className="price"><b className="tnum">{plan.price}</b><span>per month, USD</span></div>
+              <p className="cap"><i aria-hidden="true">{[1, 2, 3].map((n) => <span className={n <= plan.level ? "on" : undefined} key={n}></span>)}</i>{plan.running}</p>
+              <ul className="incl">
+                {plan.incl.map((item) => (
+                  <li key={item}><Icon name="i-check" />{item}</li>
+                ))}
+              </ul>
+              <a className={plan.btn} href="#start">Start with {plan.name}</a>
+            </article>
+          ))}
         </div>
+
+        <article className="fee fee-next" aria-labelledby="fee-next">
+          <div>
+            <span className="fee-n">03</span>
+            <h3 className="d" id="fee-next">Next project</h3>
+            <p className="fee-big">A new setup fee</p>
+          </div>
+          <p>Once something works, you will find the next thing to fix. Each new project is quoted on its own.</p>
+        </article>
 
         <div className="terms">
           <div className="terms-h"><h3 className="d h3">Terms of engagement</h3><p>The whole contract, in five lines.</p></div>
@@ -121,16 +171,17 @@ export function Pricing() {
 }
 
 const FAQS = [
-  ["What counts as a request?", "One clear piece of work, like a text-back for missed calls, a reminder that chases missing documents, an AI agent, a report or a fix. Bigger projects are split into weekly pieces, so you see progress every week."],
+  ["What does the setup fee cover?", "Building and launching one project, like a text-back for missed calls, a reminder that chases missing documents, an AI agent or a client portal. Setup fees run from $3,000 to $15,000 USD, and you get a fixed price after your free Weave Session. You pay half up front and half at launch."],
+  ["What does the retainer cover?", "Hosting, monitoring, fixes and small improvements for what we build. It starts at launch and runs from $1,495 to $4,995 USD a month, depending on what is running. New projects are quoted separately."],
   ["Who actually does the work?", "A senior lead owns your account and talks to you directly. Engineers and product designers from the Kimp studio build with them. AI speeds up the building, and people review every change before it goes live."],
   ["Which AI models do you use?", "Whatever fits the job best. We build on Claude, OpenAI, Gemini and open models, and switch when a better one arrives. You are never locked to one vendor."],
-  ["How soon will something be live?", "We aim to put your first automation live in the first week of your retainer, starting with the item on your Automation Map that saves the most hours."],
-  ["What happens if I pause or cancel?", "You keep everything we built, with notes on how it works. Resume anytime and we pick up where we left off."],
-  ["Are AI and software costs included?", "Our work, hosting and upkeep are included. Outside costs like AI usage, text messages or paid software seats are billed at cost, with no markup."],
+  ["How soon will something be live?", "It depends on the project, and your quote includes a target launch date before you pay anything. We start with the item on your Automation Map that saves the most hours."],
+  ["What happens if I cancel?", "The retainer has a three-month minimum, then runs month to month. You own your data and the work. If you cancel, we hand over an export, and it stops running on our infrastructure."],
+  ["Are AI and software costs included?", "Hosting and upkeep are in your retainer. Outside costs like AI usage, text messages or paid software seats are billed at cost, with no markup."],
   ["Does anything go out without our approval?", "Only what you choose. Client emails, documents, filings and payments wait for a person on your team to approve them. Routine steps, like a reminder or a receipt, can run on their own once you trust them. Every action is logged."],
   ["Is client information kept confidential?", "Yes. Agents only see the systems and files you approve, and we are happy to sign your confidentiality agreement before we start. We work within the rules you already follow, like FINTRAC records, trust accounting and CRA deadlines, and your team stays responsible for compliance. Agents are set up not to give legal, tax or mortgage advice. That stays with your lawyers, brokers and accountants."],
   ["Do we have to switch software?", "No. We build on what you already run, like your CRM, practice management, accounting and job software. If a tool cannot be connected, we tell you in the Weave Session."],
-  ["Where does my data live?", "In your own accounts wherever possible. When we host something, you choose the region, including Canada or the US. Agents only see the systems you approve."],
+  ["Where does my data live?", "What we build runs on our infrastructure, and you choose the region, including Canada or the US. Your data stays in your own accounts wherever possible, and agents only see the systems you approve."],
 ];
 
 export function Faq() {
@@ -209,7 +260,7 @@ export function Footer() {
               <Arrow /></a></div>
         </div>
         <div className="f-cols">
-          <div><p className="f-blurb">We weave your tools, data and teams into automated workflows, AI agents and custom software for owner-led businesses, on one flat monthly retainer.</p></div>
+          <div><p className="f-blurb">We weave your tools, data and teams into automated workflows, AI agents and custom software for owner-led businesses. A fixed setup fee for each project, then a flat monthly retainer.</p></div>
           <div><h4>Services</h4><ul><li><a href="#services">Automations</a></li><li><a href="#services">AI agents</a></li><li><a href="#services">Custom software</a></li><li><a href="#roi">Cost calculator</a></li></ul></div>
           <div><h4>Firm</h4><ul><li><a href="#how">How it works</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#faq">Questions</a></li><li><a href="#start">Book a session</a></li></ul></div>
         </div>

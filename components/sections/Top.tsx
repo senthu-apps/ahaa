@@ -56,7 +56,7 @@ export function Hero() {
         <div>
           <p className="kicker" data-intro=""><span className="pulse" aria-hidden="true"></span>AI automation, agents and custom software, on retainer</p>
           <h1 className="d" id="hero-title">Stop doing<br /> work software<br /> should do.</h1>
-          <p className="lead" data-intro="">AI Weavers ties your apps, data and people together, then builds and runs the automated workflows, AI agents and custom software your business needs, for one flat monthly fee. AI does the busywork and your team approves what matters. Something new ships every week, and you own all of it.</p>
+          <p className="lead" data-intro="">AI Weavers ties your apps, data and people together, then builds and runs the automated workflows, AI agents and custom software your business needs. You pay a fixed setup fee for each project, then a flat monthly retainer to keep it running. AI does the busywork and your team approves what matters.</p>
           <div className="cta-row" data-intro="">
             <a className="btn magnet" href="#start">Book your free Weave Session
               <Arrow /></a>
@@ -64,10 +64,10 @@ export function Hero() {
           </div>
           <p className="cta-note" data-intro="">A 30-minute call. You leave with a written plan, whether you hire us or not.</p>
           <ul className="assure" data-intro="">
-            <li><Icon name="i-check" />Flat monthly fee</li>
-            <li><Icon name="i-check" />Ships every week</li>
-            <li><Icon name="i-check" />You own the code</li>
-            <li><Icon name="i-check" />Pause anytime</li>
+            <li><Icon name="i-check" />Fixed price per project</li>
+            <li><Icon name="i-check" />Flat monthly retainer</li>
+            <li><Icon name="i-check" />You own your data and the work</li>
+            <li><Icon name="i-check" />Month to month after three months</li>
           </ul>
         </div>
 
@@ -138,12 +138,12 @@ export function Thesis() {
   return (
     <section className="sec" id="why" aria-labelledby="why-h">
       <div className="wrap thesis-grid">
-        <div><Label id="why-h">Why a retainer</Label></div>
+        <div><Label id="why-h">Why a fixed price</Label></div>
         <div>
-          <p className="thesis-text" id="thesis">Hourly billing pays dev shops more when the work goes slowly. AI has made building software many times faster, and that speed belongs to you. So AI Weavers charges one flat monthly fee, ships something every week, and hands you the keys to everything we build.</p>
+          <p className="thesis-text" id="thesis">Hourly billing pays dev shops more when the work goes slowly. AI has made building software many times faster, and that speed belongs to you. So AI Weavers quotes a fixed price for each project, then charges a flat monthly retainer to keep it running. Your data and the work stay yours.</p>
           <div className="thesis-foot">
             <a className="ulink" href="#compare">Compare it with hourly work</a>
-            <p>Retained like a firm. Priced like a subscription.</p>
+            <p>Priced up front. Kept running on retainer.</p>
           </div>
         </div>
       </div>

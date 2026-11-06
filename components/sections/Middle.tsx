@@ -186,15 +186,15 @@ const LEGEND: [React.CSSProperties, string][] = [
   [{ background: "var(--ph2)" }, "Quotes and contracts"],
   [{ background: "var(--ph3)" }, "Building, nothing live"],
   [{ background: "var(--coral-wash)", boxShadow: "inset 0 0 0 1.5px var(--coral-ink)" }, "Change order"],
-  [{ background: "var(--cobalt)" }, "Dev shop launch"],
-  [{ background: "var(--coral)" }, "Something shipped"],
+  [{ background: "var(--cobalt)" }, "Launch"],
+  [{ background: "var(--coral)" }, "Live, on retainer"],
 ];
 
 const COMPARE = [
-  ["Weeks of discovery before anything ships", "Something live in the first week"],
-  ["Change orders when priorities shift", "Change priorities anytime, same fee"],
-  ["Hosting and fixes billed separately", "Hosting and upkeep included"],
-  ["The dev shop holds the code and accounts", "You own everything from day one"],
+  ["Weeks of paid discovery before a real number", "A free Weave Session, then a fixed quote"],
+  ["Change orders when priorities shift", "New work quoted as its own fixed-price project"],
+  ["Hosting and fixes billed separately", "Hosting, monitoring and fixes in one retainer"],
+  ["The dev shop holds the code and accounts", "You own your data and the work"],
 ];
 
 export function Race() {
@@ -203,10 +203,10 @@ export function Race() {
       <div className="wrap">
         <div className="sec-head">
           <div>
-            <Label>Hourly or retainer</Label>
+            <Label>Hourly or fixed price</Label>
             <h2 className="d h2" id="race-h">Same project. Two ways to pay for it.</h2>
           </div>
-          <p className="lead">An hourly dev shop spends months deciding. A retainer ships in week one and keeps shipping. Drag through the first quarter.</p>
+          <p className="lead">An hourly dev shop bills for every week of deciding. With AI Weavers you know the price before work starts, and a retainer keeps it running after launch. Drag through an example first quarter.</p>
         </div>
 
         <div className="race-board">
@@ -224,7 +224,7 @@ export function Race() {
             <p className="lane-status" id="h-status" aria-live="polite"></p>
           </div>
           <div className="lane">
-            <div><p className="lane-name">AI Weavers retainer</p><p className="lane-count">Shipped <b id="a-count">12</b></p></div>
+            <div><p className="lane-name">AI Weavers fixed price</p><p className="lane-count">Shipped <b id="a-count">1</b></p></div>
             <div className="cells" id="a-cells" aria-hidden="true"></div>
             <p className="lane-status" id="a-status" aria-live="polite"></p>
           </div>
@@ -235,8 +235,8 @@ export function Race() {
           </div>
         </div>
 
-        <div className="cmp" role="table" aria-label="Hourly billing compared with an AI Weavers retainer">
-          <div className="r" role="row"><div className="c h a" role="columnheader">Billed by the hour</div><div className="c h b" role="columnheader">On an AI Weavers retainer</div></div>
+        <div className="cmp" role="table" aria-label="Hourly billing compared with AI Weavers fixed pricing">
+          <div className="r" role="row"><div className="c h a" role="columnheader">Billed by the hour</div><div className="c h b" role="columnheader">With AI Weavers</div></div>
           {COMPARE.map(([a, b]) => (
             <div className="r" role="row" key={a}><div className="c a" role="cell">{a}</div><div className="c b" role="cell">{b}</div></div>
           ))}
@@ -280,10 +280,10 @@ export function Roi() {
               <div><b id="x-back">$49,920</b><span>AI Weavers could win back each year</span></div>
               <div><b id="x-time">19 hrs</b><span>back every week</span></div>
             </div>
-            <p className="r-verdict" id="x-verdict">The Core retainer costs $42,000 USD a year. Every $1 returns about <b>$1.19</b>. It pays for itself once AI Weavers wins back 17 hours a week.</p>
+            <p className="r-verdict" id="x-verdict">Our lowest setup fee plus a year of the Growth retainer comes to $20,940 USD. Every $1 returns about <b>$2.38</b>. It pays for itself once AI Weavers wins back 9 hours a week.</p>
             <a className="btn btn-block" href="#start">Check these numbers on a free call
               <Arrow /></a>
-            <p className="r-note">Assumes 60% of these hours can be automated. We measure your real numbers in the Weave Session.</p>
+            <p className="r-note">Assumes 60% of these hours can be automated. Cost uses our lowest setup fee, and your quote may be higher. We measure your real numbers in the Weave Session.</p>
           </div>
         </div>
       </div>
