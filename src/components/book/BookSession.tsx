@@ -17,7 +17,7 @@ type Field = keyof Lead;
  * down a stitched thread, sticky at lg), the request form on a white sheet
  * on the right. The sheet's ink top edge is the warp; the orange thread is
  * drawn along it as the five required answers come in (--bk-p).
- * Sends to /api/book, which forwards to BOOK_WEBHOOK_URL.
+ * Sends to /api/book, which emails it through Resend (see src/lib/mail.ts).
  */
 export function BookSession() {
   const root = useRef<HTMLElement>(null);

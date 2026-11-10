@@ -419,24 +419,29 @@ function Scheduler({ today, avail, onPick }: { today: Date; avail: ReturnType<ty
   /* booked */
   if (step === "done" && slot)
     return (
-      <div role="status" className="flex min-h-[22rem] flex-col items-start justify-center">
-        <span className="price-hole size-11 !bg-ink !text-white">
-          <Check className="size-4" />
-        </span>
-        <p className="mt-6 text-[1.375rem] font-semibold tracking-[-0.03em] text-ink">
-          {fmtDay(slot)} · {fmtTime(slot)}
-        </p>
-        <p className="mt-1.5 text-[0.9375rem] text-graphite">{meta}</p>
-        {avail.live ? (
-          <p className="mt-6 max-w-[44ch] text-pretty text-[0.9375rem] leading-[1.55] text-graphite">
-            {S.done.sent} <b className="font-medium text-ink">{email}</b>. {S.done.change}
+      <div role="status" className="flex min-h-[22rem] flex-col items-stretch pt-6 md:pt-12">
+        {/* the booked slot, as a panel (Figma 183:4869) */}
+        <div className="rounded-[12px] bg-sunken px-4 py-5">
+          <span className="price-hole size-11 !bg-ink !text-white">
+            <Check className="size-4" />
+          </span>
+          <p className="mt-6 text-[1.375rem] font-semibold leading-[1.5] tracking-[-0.03em] text-ink">
+            {fmtDay(slot)} · {fmtTime(slot)}
           </p>
-        ) : (
-          <p className="mt-6 rounded-[10px] bg-sunken px-3.5 py-2.5 text-[0.8125rem] text-graphite shadow-[inset_0_0_0_1px_var(--line)]">{S.sampleNote}</p>
-        )}
-        <button type="button" onClick={reset} className="mt-5 text-[0.875rem] font-medium text-ink underline underline-offset-4">
-          {S.done.again}
-        </button>
+          <p className="mt-1 text-[1rem] leading-[1.4] text-graphite">{meta}</p>
+        </div>
+        <div className="px-2">
+          {avail.live ? (
+            <p className="mt-6 max-w-[520px] text-pretty text-[1rem] leading-[1.45] text-graphite">
+              {S.done.sent} <b className="font-medium text-ink">{email}</b>. {S.done.change}
+            </p>
+          ) : (
+            <p className="mt-6 rounded-[10px] bg-sunken px-3.5 py-2.5 text-[0.8125rem] text-graphite shadow-[inset_0_0_0_1px_var(--line)]">{S.sampleNote}</p>
+          )}
+          <button type="button" onClick={reset} className="mt-5 text-[0.875rem] font-medium text-ink underline underline-offset-4">
+            {S.done.again}
+          </button>
+        </div>
       </div>
     );
 

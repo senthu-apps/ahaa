@@ -23,7 +23,7 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 Copy `.env.example` to `.env.local` and fill it in (see the comments there):
 
 - `LUNACAL_API_KEY` and `LUNACAL_EVENT_TYPE_ID` — the scheduler in **Book an audit** (`#book`) reads availability from and books into [LunaCal](https://app.lunacal.ai) through `/api/schedule`. Without them the calendar shows sample availability and books nothing.
-- `BOOK_WEBHOOK_URL` — where the "Write to us instead" form and the calculator's "Email me this estimate" are delivered (`/api/book`).
+- `RESEND_API_KEY`, `MAIL_TO` and optionally `MAIL_FROM` — the "Write to us instead" form and the calculator's "Email me this estimate" are emailed through [Resend](https://resend.com) by `/api/book`: every request goes to `MAIL_TO`, and an estimate also goes to the visitor who asked for it. `MAIL_FROM` must be on a domain verified in Resend. Without the key and `MAIL_TO`, development logs the request and production answers 503.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 

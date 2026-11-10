@@ -142,7 +142,8 @@ export function Calculator() {
       const res = await fetch("/api/book", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ kind: "estimate", name: "", email, company, notes, website: "" }),
+        // the sliders' values let the email lay the estimate out like this panel; `notes` is the one-line fallback
+        body: JSON.stringify({ kind: "estimate", name: "", email, company, notes, estimate: { hours, rate, share }, website: "" }),
       });
       if (!res.ok) throw new Error(`book answered ${res.status}`);
       setSent(true);
