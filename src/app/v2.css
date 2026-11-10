@@ -636,6 +636,79 @@
       0 0 0 1px var(--ink),
       0 0 0 4px var(--signal-soft);
   }
+  /* the booking form's dropdown list (Picker in Book.tsx): drawn by the site, not by the OS */
+  .sched-menu {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + 6px);
+    z-index: 30;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    max-height: 22rem;
+    overflow-y: auto;
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow:
+      0 0 0 1px var(--line-strong),
+      0 2px 6px rgb(22 22 27 / 0.06),
+      0 18px 44px -18px rgb(22 22 27 / 0.3);
+    transform-origin: top center;
+    animation: sched-menu-in 0.18s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  @keyframes sched-menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  /* opens upward when the viewport has more room above the field than below it */
+  .sched-menu[data-up] {
+    top: auto;
+    bottom: calc(100% + 6px);
+    transform-origin: bottom center;
+    animation-name: sched-menu-in-up;
+  }
+  @keyframes sched-menu-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(4px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .sched-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+  }
+  .sched-option[data-active] {
+    background: var(--sunken);
+  }
+  .sched-option[aria-selected="true"] {
+    font-weight: 600;
+  }
+  .sched-option[aria-selected="true"] svg {
+    color: var(--signal);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sched-menu {
+      animation: none;
+    }
+  }
 }
 
 /* ---------------------------------------------------------- unlayered: beat Tailwind display utilities */

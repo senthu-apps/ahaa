@@ -489,12 +489,42 @@ export const BOOKING = {
   fallback: {
     heading: "No time that suits?",
     text: "Tell us what you want automated and we will reply within one business day.",
-    fields: { name: "Name", email: "Work email", company: "Company", what: "What would you like to automate?" },
+    /* the same fields as the scheduler's details step (Figma node 183:16); the topic options are book.ts TIME_SINKS */
+    fields: { first: "First Name", last: "Last Name", email: "Email Address", company: "Company", topic: "What would you like to automate?" },
     /* the form stays folded until this link is clicked (UI labels, not in the doc) */
     link: "Write to us instead",
     hide: "Hide the form",
     send: "Send",
     sent: "Thanks. We will reply within one business day.",
+  },
+  /* the scheduler (UI labels, not in the doc). Times and bookings come from LunaCal through
+     /api/schedule; without LUNACAL_API_KEY + LUNACAL_EVENT_TYPE_ID it shows sample times and books nothing. */
+  scheduler: {
+    tag: { live: "Live availability", sample: "Preview" },
+    event: "Free automation audit",
+    call: "Video call",
+    timesIn: "Times in",
+    sample: "Sample availability",
+    loading: "Checking the calendar…",
+    empty: "No times left on this day. Pick another.",
+    failed: "The calendar did not load.",
+    retry: "Try again",
+    pick: "Pick a time",
+    next: "Continue with",
+    change: "Change time",
+    /* labels as in the Figma form (node 183:16); the topic options are book.ts TIME_SINKS */
+    fields: { first: "First Name", last: "Last Name", email: "Email Address", company: "Company", topic: "What would you like to automate?" },
+    topicPlaceholder: "Select from the list",
+    hint: "You get a calendar invite by email. Reschedule from it any time.",
+    confirm: "Confirm booking",
+    booking: "Booking…",
+    taken: "That time was just taken. Pick another.",
+    done: {
+      sent: "Booked. A calendar invite is on its way to",
+      change: "Need a different time? The invite has a link to reschedule.",
+      again: "Pick another time",
+    },
+    sampleNote: "Prototype: nothing was booked. With the LunaCal keys set, this confirms by email.",
   },
 };
 

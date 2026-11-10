@@ -1420,6 +1420,10 @@ body {
 }
 
 .book-sheet {
+  position: relative;
+  /* above the rules, crosshairs and fallback row that follow it, so the booking form's
+     dropdown (.sched-menu) can hang over them instead of under them */
+  z-index: 2;
   background: var(--surface);
 }
 .book-edge {

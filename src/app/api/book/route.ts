@@ -23,10 +23,10 @@ export async function POST(req: Request) {
   // a bot filled the hidden field: thank it and drop the request
   if (lead.website) return NextResponse.json({ ok: true });
 
-  // the booking form sends every field; the "Write to us instead" message has no team size or
-  // time sink, and the calculator's estimate request has no name either
+  // the booking form sends every field; the "Write to us instead" message has no team size, and
+  // the calculator's estimate request has no team size, time sink or name
   const kind = (body as { kind?: unknown }).kind;
-  const relaxed = kind === "message" ? ["team", "sink"] : kind === "estimate" ? ["team", "sink", "name"] : [];
+  const relaxed = kind === "message" ? ["team"] : kind === "estimate" ? ["team", "sink", "name"] : [];
   const errors = validate(lead);
   for (const k of relaxed) delete errors[k as keyof typeof errors];
   if (Object.keys(errors).length) return NextResponse.json({ ok: false, error: "invalid", errors }, { status: 422 });

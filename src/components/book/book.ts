@@ -76,7 +76,8 @@ export type Errors = Partial<Record<keyof Lead, string>>;
 
 export const LIMITS = { name: 120, email: 254, company: 160, notes: 2000 } as const;
 
-const EMAIL = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)*\.[^\s@.]{2,}$/;
+/** The email shape the forms and the API routes (/api/book, /api/schedule) agree on. */
+export const EMAIL = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)*\.[^\s@.]{2,}$/;
 
 export function validate(v: Lead): Errors {
   const e: Errors = {};
