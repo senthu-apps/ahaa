@@ -1,36 +1,6 @@
-import { Hero } from "@/components/hero/Hero";
-import { IndustryTicker } from "@/components/industries/IndustryTicker";
-import { FixedPrice } from "@/components/pricing/FixedPrice";
-import { WhatWeBuild } from "@/components/services/WhatWeBuild";
-import { OrdinaryTuesday } from "@/components/day/OrdinaryTuesday";
-import { HourlyVsFixed } from "@/components/compare/HourlyVsFixed";
-import { CostCalculator } from "@/components/calculator/CostCalculator";
-import { HowItWorks } from "@/components/process/HowItWorks";
-import { WhoDoesTheWork } from "@/components/team/WhoDoesTheWork";
-import { Pricing } from "@/components/pricing/Pricing";
-import { Faq } from "@/components/faq/Faq";
-import { Rails } from "@/components/site/Rails";
-import { SiteFooter } from "@/components/site/Footer";
+import { LandingPage } from "@/components/v2/LandingPage";
 
+/** aiweavers.com — the v2 landing page (src/components/v2), ported from improvised-prototype/. */
 export default function Home() {
-  return (
-    <>
-      <main className="relative">
-        {/* first child: every section paints above the rails */}
-        <Rails />
-        <Hero />
-        <IndustryTicker />
-        <FixedPrice />
-        <WhatWeBuild />
-        <OrdinaryTuesday />
-        <HourlyVsFixed />
-        <CostCalculator />
-        <HowItWorks />
-        <WhoDoesTheWork />
-        <Pricing />
-        <Faq />
-      </main>
-      <SiteFooter />
-    </>
-  );
+  return <LandingPage />;
 }

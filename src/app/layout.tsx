@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Host_Grotesk, Martian_Mono } from "next/font/google";
 import "./globals.css";
+import "./v2.css";
 
 const hostGrotesk = Host_Grotesk({
   variable: "--font-host-grotesk",

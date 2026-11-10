@@ -1403,6 +1403,288 @@ body {
 }
 
 /* ------------------------------------------------------------------
+   Book a session — the steps run down a stitched thread between needle
+   holes; the form is a white sheet with an ink top edge (the warp), and
+   the orange thread along that edge is drawn as the required answers
+   come in (--bk-p, 0 → 1). Orange marks only what is live: answered
+   fields, the chosen chip, the thread.
+------------------------------------------------------------------- */
+.book-link {
+  position: absolute;
+  left: calc(1.125rem - 0.75px);
+  top: calc(2.25rem + 7px);
+  bottom: 7px;
+  width: 1.5px;
+  background-image: linear-gradient(to bottom, var(--line-strong) 58%, transparent 58%);
+  background-size: 1.5px 7px;
+}
+
+.book-sheet {
+  background: var(--surface);
+}
+.book-edge {
+  position: absolute;
+  z-index: 1;
+  inset-inline: 0;
+  top: -1px;
+  height: 2px;
+  background: var(--ink);
+}
+.book-edge-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--signal);
+  transform-origin: left center;
+  transform: scaleX(var(--bk-p, 0));
+  transition:
+    transform 0.9s var(--ease-out-expo),
+    box-shadow 0.6s ease;
+}
+.book-sheet[data-sent] .book-edge-fill {
+  box-shadow: 0 0 12px rgb(242 84 27 / 0.55);
+}
+
+/* the five answers: needle holes on a hairline thread */
+.book-pips {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.book-pips::before {
+  content: "";
+  position: absolute;
+  inset-inline: 4px;
+  top: 50%;
+  height: 1px;
+  background: var(--line-strong);
+}
+.book-pip {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1.25px var(--line-strong);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.5s var(--ease-out-expo);
+}
+.book-pip[data-on="true"] {
+  background: var(--signal);
+  box-shadow:
+    0 0 0 1.25px var(--signal),
+    0 0 0 4px rgb(242 84 27 / 0.14);
+  transform: scale(1.1);
+}
+
+.book-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+/* a floated legend lays out like any block (and the content after it clears) */
+legend.book-label {
+  float: left;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+.book-opt {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+.book-control {
+  position: relative;
+  margin-top: 0.5rem;
+}
+.book-input {
+  display: block;
+  width: 100%;
+  height: 3rem;
+  padding-inline: 0.9375rem;
+  border-radius: 11px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1rem; /* 16px: phones don't zoom in on focus */
+  box-shadow:
+    0 0 0 1px var(--line-strong),
+    0 1px 2px rgb(22 22 27 / 0.04);
+  transition:
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+.book-input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .book-input:hover {
+    box-shadow:
+      0 0 0 1px #bcbcc6,
+      0 1px 2px rgb(22 22 27 / 0.04);
+  }
+}
+.book-input:focus {
+  box-shadow:
+    0 0 0 1px var(--ink),
+    0 0 0 5px var(--signal-soft);
+}
+.book-input[aria-invalid="true"] {
+  box-shadow: 0 0 0 1px var(--signal-deep);
+}
+.book-input[aria-invalid="true"]:focus {
+  box-shadow:
+    0 0 0 1px var(--signal-deep),
+    0 0 0 5px var(--signal-soft);
+}
+.book-area {
+  height: auto;
+  min-height: 7.5rem;
+  padding-block: 0.8125rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+.book-select {
+  appearance: none;
+  padding-right: 2.75rem;
+  cursor: pointer;
+}
+.book-select[data-empty] {
+  color: var(--muted);
+}
+.book-select option {
+  color: var(--ink);
+}
+.book-chevron {
+  position: absolute;
+  right: 0.9375rem;
+  top: 50%;
+  width: 0.75rem;
+  height: 0.75rem;
+  translate: 0 -50%;
+  color: var(--graphite);
+  pointer-events: none;
+}
+
+/* time sinks: one pick, as chips */
+.book-chips {
+  clear: both;
+}
+.book-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.9375rem 0.5rem 0.8125rem;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  font-size: 0.9375rem;
+  line-height: 1.25;
+  color: var(--ink);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.45s var(--ease-out-expo);
+}
+.book-chip::before {
+  content: "";
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1.25px var(--line-strong);
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .book-chip:hover {
+    box-shadow: 0 0 0 1px var(--ink);
+  }
+}
+.book-chip:active {
+  transform: scale(0.97);
+}
+.book-chip:has(input:checked) {
+  background: var(--ink);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.14),
+    0 0 0 1px var(--ink);
+}
+.book-chip:has(input:checked)::before {
+  background: var(--signal);
+  box-shadow: 0 0 0 3px rgb(242 84 27 / 0.3);
+}
+.book-chip:has(input:focus-visible) {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+.book-chips[data-invalid] .book-chip {
+  box-shadow: 0 0 0 1px rgb(217 64 12 / 0.45);
+}
+
+.book-err {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--signal-deep);
+}
+.book-err::before {
+  content: "";
+  flex-shrink: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+}
+.book-alert {
+  padding: 0.8125rem 1rem;
+  border-radius: 11px;
+  background: var(--signal-soft);
+  color: var(--signal-deep);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.book-done-hole {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.16),
+    0 0 0 6px var(--signal-soft);
+}
+.book-done-hole svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.book-done-hole path {
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ------------------------------------------------------------------
    Footer — the dark band's own parts: the haloed call to action, the
    link underline, and the ember glow the wordmark stands in.
 ------------------------------------------------------------------- */
@@ -1503,6 +1785,16 @@ body {
 .faq-q:focus-visible {
   outline-offset: -3px;
   border-radius: 6px;
+}
+/* Booking form fields draw their own focus ring (box-shadow); the chip's ring is on its label.
+   The confirmation heading takes focus only so screen readers announce it. */
+.book-input:focus-visible,
+.book-chip input:focus-visible,
+.book-done-h:focus-visible {
+  outline: none;
+}
+.book-input:focus-visible {
+  border-radius: 11px;
 }
 
 /* Elements revealed by the intro timeline start hidden only when JS runs. */
