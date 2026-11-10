@@ -639,17 +639,52 @@ body {
     color 0.4s ease,
     box-shadow 0.4s ease;
 }
+/* the step being read: its ring is drawn by the arriving thread (below); the halo
+   and the number come up once the ring has closed */
 .hw-step[data-state="now"] .hw-hole {
   background: var(--surface);
   color: var(--ink);
   box-shadow:
-    0 0 0 2px var(--signal),
+    0 0 0 1.5px var(--line-strong),
     0 0 0 6px var(--signal-soft);
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease 0.3s,
+    box-shadow 0.5s ease 0.6s;
 }
 .hw-step[data-state="done"] .hw-hole {
   background: var(--ink);
   color: #fff;
   box-shadow: 0 0 0 1.5px var(--ink);
+}
+/* The ring: two half-circles from the top, where the thread comes in, down both
+   sides to meet at the bottom. Drawn as the step goes live; ink once it's done. */
+.hw-ring {
+  position: absolute;
+  inset: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  overflow: visible;
+  pointer-events: none;
+}
+.hw-ring path {
+  fill: none;
+  stroke: var(--signal);
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition:
+    stroke-dashoffset 0.75s cubic-bezier(0.65, 0, 0.35, 1),
+    stroke 0.4s ease;
+}
+.hw-step:is([data-state="now"], [data-state="done"]) .hw-ring path {
+  stroke-dashoffset: 0;
+}
+.hw-step[data-state="now"] .hw-ring {
+  filter: drop-shadow(0 0 3px rgb(242 84 27 / 0.55));
+}
+.hw-step[data-state="done"] .hw-ring path {
+  stroke: var(--ink);
 }
 .hw-title {
   color: var(--muted);
@@ -658,16 +693,53 @@ body {
 .hw-step:is([data-state="now"], [data-state="done"]) .hw-title {
   color: var(--ink);
 }
-/* the running stitch: rounded stitches on a marked line, sewn in orange down to the next step
-   as that step's row is woven (clip, not scale, so the stitches never stretch) */
+/* The thread to the next step: one marked line, drawn over in glowing orange as
+   that step's row is read. --f is how far (0 → 1). Clipped, not scaled, so the
+   boost that runs down it never stretches. */
+.hw-link {
+  --f: clamp(0, var(--hw-p, 0) - var(--i), 1);
+}
 .hw-under {
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='18'%3E%3Crect y='2' width='2' height='9' rx='1' fill='%23d3d3da'/%3E%3C/svg%3E")
-    repeat-y top / 2px 18px;
+  border-radius: 2px;
+  background: var(--line-strong);
+  opacity: 0.5; /* the unread path stays quiet; the lit thread carries the eye */
 }
 .hw-thread {
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='3' height='18'%3E%3Crect y='1' width='3' height='11' rx='1.5' fill='%23f2541b'/%3E%3C/svg%3E")
-    repeat-y top / 3px 18px;
-  clip-path: inset(0 0 calc((1 - clamp(0, var(--hw-p, 0) - var(--i), 1)) * 100%) 0);
+  overflow: hidden;
+  border-radius: 3px;
+  background: linear-gradient(to bottom, #ff7a45, var(--signal));
+  box-shadow:
+    0 0 5px rgb(242 84 27 / 0.6),
+    0 0 14px 1px rgb(242 84 27 / 0.28);
+  /* the sides open wide so the glow isn't cut off; the bottom follows the reading line */
+  clip-path: inset(-8px -18px calc((1 - var(--f)) * 100%) -18px);
+}
+/* the boost: a hot streak that keeps running down the lit part (the clip hides it below) */
+.hw-thread::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -80px;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, rgb(255 196 168 / 0.9) 70%, #fff 88%, transparent);
+  animation: hw-boost 1.7s cubic-bezier(0.55, 0, 0.25, 1) infinite;
+  animation-delay: calc(var(--i) * -0.4s);
+}
+/* the needle at the leading edge, only while the line is being drawn */
+.hw-tip {
+  position: absolute;
+  left: 0;
+  top: calc(var(--f) * 100%);
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 2.5px var(--signal),
+    0 0 14px 4px rgb(242 84 27 / 0.55);
+  opacity: clamp(0, min(var(--f) * 25, (1 - var(--f)) * 25), 1);
 }
 .hw-seg > span:first-child {
   color: var(--muted);
@@ -714,12 +786,13 @@ body {
 }
 
 /* ------------------------------------------------------------------
-   Who does the work — the page's one black band. The light tokens are
-   re-pointed inside it, so shared parts (Stitch, Rails, Rule, Cross,
-   LiveDot, Check, Spinner) draw light-on-dark with no variants.
+   Dark bands — Who does the work, and the site footer. The light tokens
+   are re-pointed inside them, so shared parts (Stitch, Rails, Rule, Cross,
+   LiveDot, Check, Spinner, Wordmark) draw light-on-dark with no variants.
    .ops-light flips a block back to the light system (the portfolio sheet).
 ------------------------------------------------------------------- */
-.ops-band {
+.ops-band,
+.foot-band {
   --canvas: #0a0a0c;
   --surface: #18181d;
   --sunken: #212127;
@@ -735,7 +808,8 @@ body {
   background: var(--canvas);
   color: var(--ink);
 }
-.ops-band ::selection {
+.ops-band ::selection,
+.foot-band ::selection {
   background: rgb(242 84 27 / 0.3);
   color: #fff;
 }
@@ -896,11 +970,539 @@ body {
   height: 0;
   rotate: calc(var(--a) * -1);
 }
+
+/* ------------------------------------------------------------------
+   Pricing — needle-hole step numbers, the setup-fee stepper, tier cells
+   and their rolling prices. The stepper runs down the page on phones and
+   across from md; script tweens --f (0 → 1) on each line and its fill
+   follows. Signal orange marks only the live part: the retainer.
+------------------------------------------------------------------- */
+.price-hole {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1.5px var(--line-strong);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+
+.pay-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  background: var(--canvas);
+  color: #fff;
+  box-shadow: 0 0 0 1.5px var(--line-strong);
+  transition:
+    background-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+.pay-node > * {
+  opacity: 0;
+  transition: opacity 0.3s ease 0.1s;
+}
+.pay-node[data-on="true"] {
+  background: var(--ink);
+  box-shadow:
+    0 0 0 1.5px var(--ink),
+    0 0 0 5px var(--canvas);
+}
+.pay-node[data-on="true"] > * {
+  opacity: 1;
+}
+.pay-node[data-live][data-on="true"] {
+  background: var(--signal);
+  box-shadow:
+    0 0 0 1.5px var(--signal),
+    0 0 0 5px var(--signal-soft);
+}
+.pay-node[data-live][data-on="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--signal);
+  animation: wb-ping 1.8s var(--ease-out-expo) infinite;
+}
+
+/* phones: lines hang from each node down to the next one */
+.pay-line {
+  --f: 1;
+  position: absolute;
+  left: calc(50% - 1px);
+  top: calc(1.5rem + 6px);
+  bottom: calc(-2.25rem + 6px);
+  width: 2px;
+  border-radius: 2px;
+  background: var(--line-strong);
+}
+.pay-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--ink);
+  transform-origin: top center;
+  transform: scaleY(var(--f));
+}
+.pay-line-build {
+  background: repeating-linear-gradient(to bottom, var(--line-strong) 0 5px, transparent 5px 10px);
+}
+.pay-line-build .pay-fill {
+  background: repeating-linear-gradient(to bottom, var(--ink) 0 5px, transparent 5px 10px);
+}
+/* the retainer: a live thread, running on past the last step */
+.pay-line-live {
+  bottom: -1.875rem;
+  background: transparent;
+}
+.pay-line-live .pay-fill {
+  background: repeating-linear-gradient(to bottom, var(--signal) 0 6px, transparent 6px 11px);
+  background-size: 2px 11px;
+  animation: pay-flow-y 0.9s linear infinite;
+}
+.pay-head {
+  position: absolute;
+  left: 50%;
+  bottom: 1px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--signal);
+  border-bottom: 2px solid var(--signal);
+  border-radius: 1px;
+  transform: translate(-50%, 0) rotate(45deg);
+  opacity: clamp(0, (var(--f) - 0.85) * 7, 1);
+}
+.pay-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 1.625rem;
+  padding-inline: 0.625rem;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--graphite);
+  white-space: nowrap;
+}
+.pay-chip[data-live] {
+  background: var(--signal-soft);
+  color: var(--signal-deep);
+  box-shadow: 0 0 0 1px rgb(242 84 27 / 0.28);
+}
+@media (min-width: 48rem) {
+  .pay-line {
+    position: relative;
+    left: auto;
+    top: auto;
+    bottom: auto;
+    flex: 1;
+    width: auto;
+    height: 2px;
+    margin-inline: 0.625rem;
+  }
+  .pay-line-live {
+    margin-right: 0;
+  }
+  .pay-fill {
+    transform-origin: left center;
+    transform: scaleX(var(--f));
+  }
+  .pay-line-build {
+    background: repeating-linear-gradient(to right, var(--line-strong) 0 5px, transparent 5px 10px);
+  }
+  .pay-line-build .pay-fill {
+    background: repeating-linear-gradient(to right, var(--ink) 0 5px, transparent 5px 10px);
+  }
+  .pay-line-live .pay-fill {
+    background: repeating-linear-gradient(to right, var(--signal) 0 6px, transparent 6px 11px);
+    background-size: 11px 2px;
+    animation-name: pay-flow-x;
+  }
+  .pay-head {
+    left: auto;
+    right: 1px;
+    bottom: auto;
+    top: 50%;
+    transform: translate(0, -50%) rotate(-45deg);
+  }
+  .pay-line .pay-chip {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+  }
+}
+
+/* Tier cells sit on the page grid; the featured one is a white sheet with an ink edge. */
+.price-tier {
+  background: rgb(255 255 255 / 0.4);
+  transition: background-color 0.5s ease;
+}
+.price-tier[data-featured] {
+  background: var(--surface);
+}
+@media (hover: hover) and (pointer: fine) {
+  .price-tier:not([data-featured]):hover {
+    background: rgb(255 255 255 / 0.75);
+  }
+}
+.price-tier-accent {
+  position: absolute;
+  inset-inline: 0;
+  top: -1px;
+  height: 2px;
+  background: var(--ink);
+}
+.price-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 1.625rem;
+  margin-top: 0.25rem;
+  padding-inline: 0.625rem;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--graphite);
+  white-space: nowrap;
+}
+.price-tier[data-featured] .price-tag {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Price reels: each digit is a window onto a 0–9–0–9 strip (clipped top and
+   bottom only, so tight tracking never shaves a glyph). */
+.price-figure {
+  display: inline-flex;
+  font-size: clamp(2.5rem, 3.6vw, 3rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.price-digit {
+  display: block;
+  height: 1.1em;
+  clip-path: inset(0 -0.25em);
+}
+.price-reel {
+  display: block;
+  will-change: transform;
+}
+.price-reel > span,
+.price-char {
+  display: block;
+  height: 1.1em;
+  line-height: 1.1em;
+}
+
+.price-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  height: 3rem;
+  padding-inline: 1.125rem 0.5rem;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  box-shadow: 0 0 0 1px var(--line-strong);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.4s var(--ease-out-expo);
+}
+.price-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px var(--ink);
+}
+.price-cta-icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: var(--sunken);
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition:
+    transform 0.45s var(--ease-out-expo),
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+.price-cta:hover .price-cta-icon {
+  transform: rotate(45deg);
+  background: var(--ink);
+  color: #fff;
+}
+.price-cta-primary {
+  background: var(--ink);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.16),
+    0 0 0 1px #000;
+}
+.price-cta-primary:hover {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.16),
+    0 0 0 1px #000;
+}
+.price-cta-primary .price-cta-icon,
+.price-cta-primary:hover .price-cta-icon {
+  background: var(--signal);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25);
+}
+
+.price-check {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.0625rem;
+  border-radius: 999px;
+  background: var(--sunken);
+  color: var(--ink);
+}
+.price-check svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+.price-check path {
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.price-check-strong {
+  background: var(--ink);
+  color: #fff;
+}
+.price-check-plus {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: var(--graphite);
+}
+.price-check-plus path {
+  stroke-width: 1.6;
+}
+
+/* ------------------------------------------------------------------
+   FAQ — a numbered ledger of questions. Each answer opens in place by
+   easing its grid row from 0fr to 1fr (no height measuring); a closed
+   answer is visibility:hidden, so it leaves the tab order and the
+   accessibility tree once it has folded away.
+------------------------------------------------------------------- */
+.faq-item {
+  transition: background-color 0.3s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .faq-item:hover {
+    background: rgb(255 255 255 / 0.4);
+  }
+}
+.faq-item[data-open="true"] {
+  background: rgb(255 255 255 / 0.7);
+}
+.faq-q {
+  cursor: pointer;
+}
+.faq-num {
+  color: var(--muted);
+  transition: color 0.25s ease;
+}
+.faq-item[data-open="true"] .faq-num {
+  color: var(--ink);
+}
+/* plus → minus: the vertical bar turns flat */
+.faq-toggle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  color: var(--ink);
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
+}
+.faq-toggle::before,
+.faq-toggle::after {
+  content: "";
+  position: absolute;
+  width: 11px;
+  height: 1.6px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.45s var(--ease-out-expo);
+}
+.faq-toggle::after {
+  transform: rotate(90deg);
+}
+.faq-q:hover .faq-toggle {
+  box-shadow: 0 0 0 1px var(--ink);
+}
+.faq-item[data-open="true"] .faq-toggle {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 0 0 1px var(--ink);
+}
+.faq-item[data-open="true"] .faq-toggle::after {
+  transform: rotate(0deg);
+}
+.faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.45s var(--ease-out-expo),
+    visibility 0s linear 0.45s;
+}
+.faq-item[data-open="true"] .faq-panel {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.55s var(--ease-out-expo),
+    visibility 0s linear 0s;
+}
+.faq-answer {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.45s var(--ease-out-expo);
+}
+.faq-item[data-open="true"] .faq-answer {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.4s ease 0.1s,
+    transform 0.6s var(--ease-out-expo) 0.06s;
+}
+
+/* ------------------------------------------------------------------
+   Footer — the dark band's own parts: the haloed call to action, the
+   link underline, and the ember glow the wordmark stands in.
+------------------------------------------------------------------- */
+/* A field of dots lit in signal orange from the right, the arrow's side,
+   brightest where it meets the button and gone by the field's edge. The wrapper isolates, so
+   the field can sit behind. */
+.halo {
+  --halo-warm: 242 84 27;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+}
+.halo::before,
+.halo::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  transition:
+    opacity 0.6s var(--ease-out-expo),
+    transform 0.6s var(--ease-out-expo);
+}
+/* the dots: a colour sweep, cut to a 5px grid and faded out in an ellipse */
+.halo::before {
+  z-index: -1;
+  inset: -1.75rem -5rem; /* shallow, as the light falls: the copy above stays clear */
+  background: linear-gradient(
+    90deg,
+    transparent 30%,
+    rgb(255 255 255 / 0.22) 50%,
+    rgb(255 150 100) 68%,
+    rgb(var(--halo-warm)) 90%
+  );
+  -webkit-mask:
+    radial-gradient(circle, #000 0.85px, transparent 1.25px) 0 0 / 5px 5px,
+    radial-gradient(closest-side, #000 50%, transparent);
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(circle, #000 0.85px, transparent 1.25px) 0 0 / 5px 5px,
+    radial-gradient(closest-side, #000 50%, transparent);
+  mask-composite: intersect;
+  opacity: 0.85;
+}
+/* the bloom under the dots, so the field reads as lit rather than printed */
+.halo::after {
+  z-index: -2;
+  inset: -0.75rem -2rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent 58%, rgb(var(--halo-warm) / 0.55));
+  filter: blur(22px);
+  opacity: 0.7;
+}
+.halo:hover::before {
+  opacity: 1;
+  transform: scale(1.04);
+}
+.halo:hover::after {
+  opacity: 1;
+}
+/* the button: near-black, its rim lit by the halo, warm side and cool side */
+.btn-halo {
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, #1c1c22, #0e0e11) padding-box,
+    linear-gradient(90deg, rgb(255 255 255 / 0.28), rgb(255 255 255 / 0.55) 50%, rgb(255 196 168)) border-box;
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.14),
+    inset 0 -8px 16px rgb(0 0 0 / 0.45),
+    8px 0 22px -10px rgb(var(--halo-warm) / 0.9),
+    0 14px 30px -12px rgb(0 0 0 / 0.9);
+}
+.foot-link {
+  color: var(--graphite);
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 2px;
+  transition:
+    color 0.25s ease,
+    background-size 0.5s var(--ease-out-expo);
+}
+.foot-link:hover {
+  color: var(--ink);
+  background-size: 100% 1px;
+}
+.foot-glow {
+  background: radial-gradient(52% 70% at 50% 100%, rgb(242 84 27 / 0.13) 0%, rgb(242 84 27 / 0.04) 45%, transparent 75%);
+}
 } /* end @layer components */
 
 /* Calculator sliders show focus on the thumb instead (unlayered: it must beat the global :focus-visible). */
 .calc-range:focus-visible {
   outline: none;
+}
+/* FAQ rows run rail to rail: keep their focus ring inside the rails. */
+.faq-q:focus-visible {
+  outline-offset: -3px;
+  border-radius: 6px;
 }
 
 /* Elements revealed by the intro timeline start hidden only when JS runs. */
@@ -973,6 +1575,17 @@ body {
     transform: rotate(360deg);
   }
 }
+/* the retainer thread: stitches travel along it while it runs */
+@keyframes pay-flow-y {
+  to {
+    background-position: 0 11px;
+  }
+}
+@keyframes pay-flow-x {
+  to {
+    background-position: 11px 0;
+  }
+}
 @keyframes wb-ping {
   0% {
     transform: scale(1);
@@ -982,6 +1595,13 @@ body {
   100% {
     transform: scale(2.8);
     opacity: 0;
+  }
+}
+
+/* How it works: a bright streak boosted down the lit thread */
+@keyframes hw-boost {
+  to {
+    top: 100%;
   }
 }
 
@@ -999,7 +1619,15 @@ body {
   .wb-ping {
     opacity: 0;
   }
-  .day-row[data-current="true"] .day-node::before {
+  .day-row[data-current="true"] .day-node::before,
+  .pay-node[data-live][data-on="true"]::before {
+    animation: none;
+    opacity: 0;
+  }
+  .pay-line-live .pay-fill {
+    animation: none;
+  }
+  .hw-thread::after {
     animation: none;
     opacity: 0;
   }

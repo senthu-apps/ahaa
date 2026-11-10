@@ -311,14 +311,21 @@ export function HowItWorks() {
                   style={idx(i)}
                   className="hw-step relative grid grid-cols-[2.5rem_minmax(0,1fr)] content-start gap-x-5 px-[var(--pad)] pb-14 pt-[var(--top)] [--pad:1.25rem] [--top:2.5rem] md:[--pad:2rem] lg:min-h-[56vh] lg:[--pad:2.5rem] lg:[--top:3.5rem]"
                 >
-                  {/* the running stitch to the next step: a marked line, sewn over in orange as you read on */}
+                  {/* the thread to the next step: a marked line, lit in glowing orange as you read on */}
                   {i < LAST && (
-                    <span aria-hidden className="absolute left-[calc(var(--pad)+1.25rem)] top-[calc(var(--top)+2.75rem)] h-[calc(100%-3rem)]">
+                    <span aria-hidden className="hw-link absolute left-[calc(var(--pad)+1.25rem)] top-[calc(var(--top)+2.75rem)] h-[calc(100%-3rem)]">
                       <span className="hw-under absolute inset-y-0 -left-px w-[2px]" />
                       <span className="hw-thread absolute inset-y-0 -left-[1.5px] w-[3px]" />
+                      <span className="hw-tip" />
                     </span>
                   )}
                   <span className="hw-hole relative z-[1] grid size-10 place-items-center rounded-full text-[0.875rem] font-semibold tabular-nums">
+                    {/* the ring the arriving thread draws: top, down both sides, closing at the bottom */}
+                    <svg aria-hidden className="hw-ring" viewBox="0 0 44 44">
+                      {/* each half runs 2° past top and bottom, so the halves overlap instead of leaving a seam */}
+                      <path d="M21.27 1.01A21 21 0 1 1 21.27 42.99" pathLength={1} />
+                      <path d="M22.73 1.01A21 21 0 1 0 22.73 42.99" pathLength={1} />
+                    </svg>
                     {num(i)}
                   </span>
                   <div className="min-w-0 pt-1.5">

@@ -7,22 +7,30 @@ import { HourlyVsFixed } from "@/components/compare/HourlyVsFixed";
 import { CostCalculator } from "@/components/calculator/CostCalculator";
 import { HowItWorks } from "@/components/process/HowItWorks";
 import { WhoDoesTheWork } from "@/components/team/WhoDoesTheWork";
+import { Pricing } from "@/components/pricing/Pricing";
+import { Faq } from "@/components/faq/Faq";
 import { Rails } from "@/components/site/Rails";
+import { SiteFooter } from "@/components/site/Footer";
 
 export default function Home() {
   return (
-    <main className="relative">
-      {/* first child: every section paints above the rails */}
-      <Rails />
-      <Hero />
-      <IndustryTicker />
-      <FixedPrice />
-      <WhatWeBuild />
-      <OrdinaryTuesday />
-      <HourlyVsFixed />
-      <CostCalculator />
-      <HowItWorks />
-      <WhoDoesTheWork />
-    </main>
+    <>
+      <main className="relative">
+        {/* first child: every section paints above the rails */}
+        <Rails />
+        <Hero />
+        <IndustryTicker />
+        <FixedPrice />
+        <WhatWeBuild />
+        <OrdinaryTuesday />
+        <HourlyVsFixed />
+        <CostCalculator />
+        <HowItWorks />
+        <WhoDoesTheWork />
+        <Pricing />
+        <Faq />
+      </main>
+      <SiteFooter />
+    </>
   );
 }

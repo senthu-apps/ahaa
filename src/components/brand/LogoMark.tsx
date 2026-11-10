@@ -1,3 +1,5 @@
+import { LOGO_LETTERS, LOGO_THREAD, LOGO_VIEWBOX } from "./logo-paths";
+
 type LogoMarkProps = {
   size?: number;
   /** Colour behind the mark — used for the over/under knockouts. */
@@ -43,11 +45,22 @@ export function LogoMark({ size = 28, ground = "var(--canvas)", className }: Log
   );
 }
 
-export function Wordmark({ className }: { className?: string }) {
+/**
+ * The AI Weavers logo: the wordmark, its A crossed by a thread instead of a
+ * bar. Traced from the master PNG (scripts/logo). The letters take the text
+ * colour, so they read ink on the light bands and light on the dark ones;
+ * the thread is always the signal orange.
+ */
+export function Logo({ className }: { className?: string }) {
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className ?? ""}`}>
-      <LogoMark size={26} />
-      <span className="whitespace-nowrap text-[1.0625rem] font-semibold tracking-[-0.02em] text-ink">AI Weavers</span>
-    </span>
+    <svg viewBox={LOGO_VIEWBOX} className={className} role="img" aria-label="AI Weavers">
+      <path d={LOGO_LETTERS} fill="currentColor" fillRule="evenodd" />
+      <path d={LOGO_THREAD} fill="var(--signal)" />
+    </svg>
   );
+}
+
+/** The logo at header size, for the navbar and the footer. */
+export function Wordmark({ className }: { className?: string }) {
+  return <Logo className={`block h-5 w-auto text-ink ${className ?? ""}`} />;
 }
