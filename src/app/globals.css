@@ -1,0 +1,1006 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   AI Weavers — design tokens
+   Line-art system: one hairline weight, ink for structure, signal
+   orange reserved for things that are live (data moving, approvals).
+------------------------------------------------------------------- */
+:root {
+  --canvas: #f6f6f7;
+  --surface: #ffffff;
+  --sunken: #f1f1f3;
+  --line: #e4e4e8;
+  --line-strong: #d3d3da;
+  --rail: #dcdce2; /* page structure lines: a step above the background grid */
+  --ink: #16161b;
+  --graphite: #5c5c68;
+  --muted: #8b8b96;
+  --signal: #f2541b;
+  --signal-deep: #d9400c;
+  --signal-soft: #ffe9df;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Headline end lines (Figma 181:8). Fixed, so the rail-to-end-line gap is a
+     constant 204px and the corner wiring can be drawn from the rail. */
+  --title-panel-w: 784px;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-rail: var(--rail);
+  --color-ink: var(--ink);
+  --color-graphite: var(--graphite);
+  --color-muted: var(--muted);
+  --color-signal: var(--signal);
+  --color-signal-deep: var(--signal-deep);
+  --color-signal-soft: var(--signal-soft);
+
+  --font-sans: var(--font-host-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-martian-mono), ui-monospace, "SFMono-Regular", monospace;
+}
+
+html {
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--signal-soft);
+  color: var(--signal-deep);
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* Component classes live in a layer so Tailwind utilities (hidden, sm:…) can override them. */
+@layer components {
+/* ------------------------------------------------------------------
+   Page grid — the large hairline grid from the reference, faded so it
+   frames the content without competing with it.
+------------------------------------------------------------------- */
+.page-grid {
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  /* Locked to the page structure: 149px divides the 1192px column exactly
+     (8 × 149) and a tile edge sits on the page centre, so vertical lines land
+     ON the rails (±4 cells). Horizontal lines start on the nav rule (y = 72). */
+  background-size: 149px 149px;
+  background-position: calc(50% + 74.5px) 72px;
+  /* Two masks, intersected:
+     1. a clear ellipse around the hero copy (pill → microcopy) so no grid
+        line crosses the text, ramping back in toward the margins;
+     2. a fade that finishes above the board frame, so grid lines never sit
+        a few px from its top rule. */
+  -webkit-mask-image:
+    radial-gradient(ellipse 620px 400px at 50% 360px, transparent 55%, #000 100%),
+    linear-gradient(to bottom, #000 0, #000 360px, transparent 540px);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(ellipse 620px 400px at 50% 360px, transparent 55%, #000 100%),
+    linear-gradient(to bottom, #000 0, #000 360px, transparent 540px);
+  mask-composite: intersect;
+}
+
+/* Page structure (rails, rules, crosshairs) lives in components/site/Rails.tsx. */
+
+/* Title end lines: two faint vertical hairlines spanning the first headline
+   line — where the corner circuit wires terminate (Figma 181:8). */
+.title-panel {
+  width: var(--title-panel-w);
+  border-inline: 1px solid rgb(211 211 218 / 0.2);
+}
+.title-margin {
+  width: calc((100% - var(--title-panel-w)) / 2);
+}
+
+/* Headline: two-tone treatment from the reference (graphite → ink). */
+.headline {
+  font-kerning: none;
+}
+/* SplitText word masks clip overflow — give descenders (g, y) room. */
+.headline .hl-word-mask {
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.headline .line-soft {
+  color: #72727d;
+}
+
+/* Board edges dissolve into the frame instead of ending on a hard cut. */
+.board-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+
+/* ------------------------------------------------------------------
+   Buttons
+------------------------------------------------------------------- */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border-radius: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition:
+    transform 0.4s var(--ease-out-expo),
+    box-shadow 0.4s var(--ease-out-expo),
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+.btn-primary {
+  height: 3.25rem;
+  padding-inline: 1.375rem 0.6875rem;
+  font-size: 0.975rem;
+  background: var(--ink);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.16),
+    0 0 0 1px #000;
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+.btn-primary .btn-icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9px;
+  background: var(--signal);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25);
+  transition: transform 0.45s var(--ease-out-expo);
+}
+.btn-primary:hover .btn-icon {
+  transform: rotate(45deg);
+}
+
+.btn-quiet {
+  height: 3.25rem;
+  padding-inline: 0.5rem;
+  font-size: 0.975rem;
+  color: var(--ink);
+}
+.btn-quiet > span {
+  background-image: linear-gradient(var(--ink), var(--ink));
+  background-size: 100% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 4px;
+  transition: background-size 0.5s var(--ease-out-expo);
+}
+.btn-quiet:hover > span {
+  background-size: 0% 1.5px;
+  background-position: 100% 100%;
+}
+
+.btn-ghost {
+  height: 2.5rem;
+  padding-inline: 1rem;
+  border-radius: 11px;
+  font-size: 0.875rem;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 1px var(--line-strong),
+    0 1px 2px rgb(22 22 27 / 0.05),
+    0 6px 14px -8px rgb(22 22 27 / 0.2);
+}
+.btn-ghost:hover {
+  box-shadow:
+    0 0 0 1px var(--ink),
+    0 1px 2px rgb(22 22 27 / 0.05),
+    0 8px 18px -8px rgb(22 22 27 / 0.25);
+}
+
+/* ------------------------------------------------------------------
+   Circuit board
+------------------------------------------------------------------- */
+.board-tile {
+  cursor: pointer;
+  outline: none;
+}
+.board-tile .tile-card {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.55s var(--ease-out-expo);
+}
+.board-tile:hover .tile-card,
+.board-tile:focus-visible .tile-card {
+  transform: translateY(-4px);
+}
+/* ------------------------------------------------------------------
+   Full-bleed bands: content aligns to the 1240px frame's inner edge
+   (percentages resolve against the band, so the scrollbar is excluded).
+------------------------------------------------------------------- */
+.gutter-start {
+  padding-left: max(1.5rem, calc((100% - 1240px) / 2 + 1.5rem));
+}
+
+/* Industry ticker */
+.ticker-viewport {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 7%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 7%, #000 86%, transparent 100%);
+}
+/* ------------------------------------------------------------------
+   Fixed-price cards: illustration stage + selection brackets
+------------------------------------------------------------------- */
+.fp-dots {
+  background-image: radial-gradient(circle at 1px 1px, #d4d4da 1px, transparent 1.3px);
+  background-size: 18px 18px;
+  background-position: center;
+  -webkit-mask-image: radial-gradient(ellipse 70% 65% at 50% 45%, #000 15%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 65% at 50% 45%, #000 15%, transparent 75%);
+}
+.fp-bracket {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 0 solid var(--ink);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.fp-bracket-tl { top: -9px; left: -9px; border-top-width: 1.5px; border-left-width: 1.5px; border-top-left-radius: 9px; }
+.fp-bracket-tr { top: -9px; right: -9px; border-top-width: 1.5px; border-right-width: 1.5px; border-top-right-radius: 9px; }
+.fp-bracket-bl { bottom: -9px; left: -9px; border-bottom-width: 1.5px; border-left-width: 1.5px; border-bottom-left-radius: 9px; }
+.fp-bracket-br { bottom: -9px; right: -9px; border-bottom-width: 1.5px; border-right-width: 1.5px; border-bottom-right-radius: 9px; }
+
+/* ------------------------------------------------------------------
+   An ordinary Tuesday — a scroll-driven day log. Script writes --day-p
+   (0 → 1 across 7:00 AM → 5:30 PM) on the board, and data-done /
+   data-current on log rows and track markers; the look follows.
+------------------------------------------------------------------- */
+.day-fill {
+  transform-origin: left center;
+  transform: scaleX(var(--day-p, 0));
+}
+.day-knob {
+  left: calc(var(--day-p, 0) * 100%);
+}
+.day-marker {
+  background: var(--canvas);
+  box-shadow: 0 0 0 1.5px var(--line-strong);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.day-marker[data-done="true"] {
+  background: var(--signal);
+  box-shadow: 0 0 0 1.5px var(--signal);
+}
+/* the live dot only pulses while the day is running */
+.day-live .wb-ping {
+  display: none;
+}
+.day-board[data-running="true"] .day-live .wb-ping {
+  display: block;
+}
+
+.day-row {
+  --node-y: 24px; /* row padding (13px) + half the 22px first line */
+  transition: background-color 0.5s var(--ease-out-expo);
+}
+.day-row[data-current="true"] {
+  background-color: rgb(255 255 255 / 0.92);
+}
+.day-time,
+.day-text {
+  color: #72727d;
+  transition: color 0.45s ease;
+}
+.day-row[data-done="true"] .day-time,
+.day-row[data-done="true"] .day-text {
+  color: var(--ink);
+}
+.day-row[data-current="true"] .day-time {
+  color: var(--signal-deep);
+}
+.day-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding-inline: 8px;
+  border-radius: 7px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  white-space: nowrap;
+  transition:
+    color 0.45s ease,
+    box-shadow 0.45s ease;
+}
+.day-row[data-done="true"] .day-chip {
+  color: var(--graphite);
+  box-shadow: 0 0 0 1px var(--line-strong);
+}
+/* Thread: dashed underside until the clock pulls the orange through it. */
+.day-seg {
+  position: absolute;
+  left: 50%;
+  top: var(--node-y);
+  width: 2px;
+  height: calc(100% + 1px); /* + the row's bottom rule → lands on the next node */
+  margin-left: -1px;
+  background-image: linear-gradient(to bottom, var(--line-strong) 55%, transparent 55%);
+  background-size: 2px 7px;
+}
+.day-seg-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--signal);
+  transform-origin: top;
+  transform: scaleY(0);
+}
+.day-node {
+  position: absolute;
+  left: 50%;
+  top: var(--node-y);
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 999px;
+  isolation: isolate; /* keeps the ping behind the check but above the row */
+  background: var(--canvas);
+  box-shadow: 0 0 0 1.5px var(--line-strong);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.day-node svg {
+  transform: scale(0);
+  transition: transform 0.5s var(--ease-out-expo);
+}
+.day-row[data-done="true"] .day-node {
+  background: var(--signal);
+  box-shadow: 0 0 0 1.5px var(--signal);
+}
+.day-row[data-done="true"] .day-node svg {
+  transform: scale(1);
+}
+.day-row[data-current="true"] .day-node::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--signal);
+  animation: wb-ping 1.8s var(--ease-out-expo) infinite;
+}
+/* ------------------------------------------------------------------
+   Hourly or fixed price — the race board. Script writes --race-p
+   (0 → 1 across the twelve weeks) on the board; the bars are revealed
+   up to it and the knob and lane cursors ride on it. Phase colours run
+   from quiet greys (talking, paperwork, building with nothing live) to
+   ink for the launch and signal orange for "live, on retainer".
+------------------------------------------------------------------- */
+.race-board {
+  --race-p: 1;
+}
+.race-fill {
+  transform-origin: left center;
+  transform: scaleX(var(--race-p));
+}
+.race-knob,
+.race-cursor {
+  left: calc(var(--race-p) * 100%);
+}
+.race-reveal {
+  clip-path: inset(-12px calc((1 - var(--race-p)) * 100%) -12px -12px);
+}
+.race-slot {
+  margin-inline: 1.5px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 9px;
+}
+.race-seg {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin-inline: 1.5px;
+  padding-inline: 0.75rem;
+  border-radius: 9px;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+/* an event inside a longer bar: a node on the bar's top edge */
+.race-pin {
+  position: absolute;
+  top: 0;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1.5px var(--ink);
+}
+.race-cursor {
+  position: absolute;
+  top: -7px;
+  bottom: -7px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: var(--ink);
+  box-shadow: 0 0 0 1.5px rgb(255 255 255 / 0.9);
+  pointer-events: none;
+}
+.race-wk {
+  color: var(--muted);
+  transition: color 0.3s ease;
+}
+.race-wk[data-s="past"] {
+  color: var(--graphite);
+}
+.race-wk[data-s="now"] {
+  color: var(--ink);
+  font-weight: 650;
+}
+/* lane tiles stack every phase icon and cross-fade to the current one */
+.race-icon {
+  opacity: 0;
+  transform: translateY(5px) scale(0.86);
+  transition:
+    opacity 0.3s ease,
+    transform 0.55s var(--ease-out-expo);
+}
+.race-icon[data-on="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.ph-talk {
+  background: #e9e9ee;
+  color: var(--graphite);
+  box-shadow: inset 0 0 0 1px #d9d9e0;
+}
+.ph-paper {
+  background: #d5d5dd;
+  color: #45454f;
+}
+.ph-build {
+  background-color: #e4e4ea;
+  background-image: repeating-linear-gradient(-45deg, #c8c8d0 0 1.25px, transparent 1.25px 6px);
+  color: #45454f;
+  box-shadow: inset 0 0 0 1px #cdcdd5;
+}
+.ph-build .race-seg-label {
+  margin-left: -7px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #e4e4ea;
+}
+.ph-change {
+  background: var(--signal-soft);
+  color: var(--signal-deep);
+  box-shadow: inset 0 0 0 1.5px var(--signal);
+}
+.ph-launch {
+  background: var(--ink);
+  color: #fff;
+}
+.ph-live {
+  background: var(--signal);
+  color: #fff;
+}
+/* ------------------------------------------------------------------
+   Cost calculator — hairline sliders (ink fill up to the value, the
+   race-board knob as the thumb) and the hours chart. Bars and the
+   break-even line glide to new values; the chart waits, empty, until
+   the calculator scrolls in (data-pending).
+------------------------------------------------------------------- */
+.calc-range {
+  --fill: 50%;
+  display: block;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: pan-y;
+}
+.calc-range::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--ink) var(--fill), var(--line-strong) var(--fill));
+}
+.calc-range::-moz-range-track {
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line-strong);
+}
+.calc-range::-moz-range-progress {
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ink);
+}
+.calc-range::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -7px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1.5px var(--ink),
+    0 2px 8px -1px rgb(22 22 27 / 0.28);
+  transition:
+    transform 0.35s var(--ease-out-expo),
+    box-shadow 0.25s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.calc-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1.5px var(--ink),
+    0 2px 8px -1px rgb(22 22 27 / 0.28);
+}
+.calc-range:active::-webkit-slider-thumb {
+  transform: scale(1.18);
+}
+.calc-range:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 1.5px var(--ink),
+    0 0 0 5px var(--signal-soft),
+    0 0 0 6.5px var(--signal);
+}
+.calc-range:focus-visible::-moz-range-thumb {
+  box-shadow:
+    0 0 0 1.5px var(--ink),
+    0 0 0 5px var(--signal-soft),
+    0 0 0 6.5px var(--signal);
+}
+
+.calc-bar {
+  transform-origin: left center;
+  transition:
+    width 0.6s var(--ease-out-expo),
+    transform 1.1s var(--ease-out-expo) 0.15s;
+}
+.calc-val,
+.calc-tick {
+  transition:
+    left 0.6s var(--ease-out-expo),
+    opacity 0.5s ease 0.6s;
+}
+.calc-line {
+  border-color: var(--ink);
+  transition:
+    left 0.6s var(--ease-out-expo),
+    border-color 0.3s ease,
+    opacity 0.5s ease 0.5s;
+}
+.calc-line-label {
+  color: var(--ink);
+  transition:
+    left 0.6s var(--ease-out-expo),
+    color 0.3s ease,
+    opacity 0.5s ease 0.5s;
+}
+/* the won-back bar falls short of the line: the line goes signal */
+.calc-chart[data-pays="false"] .calc-line {
+  border-color: var(--signal-deep);
+}
+.calc-chart[data-pays="false"] .calc-line-label {
+  color: var(--signal-deep);
+}
+.calc-chart[data-pending] .calc-bar {
+  transform: scaleX(0);
+}
+.calc-chart[data-pending] :is(.calc-val, .calc-line, .calc-line-label) {
+  opacity: 0;
+}
+/* ------------------------------------------------------------------
+   How it works — the section writes --hw-p (0 → 5, where the reading
+   line is in the step list) on itself. The running stitch between step
+   numbers and the stage's stepper follow it; the active step's card plays.
+------------------------------------------------------------------- */
+.hw-hole {
+  background: var(--canvas);
+  color: var(--muted);
+  box-shadow: 0 0 0 1.5px var(--line-strong);
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+.hw-step[data-state="now"] .hw-hole {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 2px var(--signal),
+    0 0 0 6px var(--signal-soft);
+}
+.hw-step[data-state="done"] .hw-hole {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 0 0 1.5px var(--ink);
+}
+.hw-title {
+  color: var(--muted);
+  transition: color 0.45s ease;
+}
+.hw-step:is([data-state="now"], [data-state="done"]) .hw-title {
+  color: var(--ink);
+}
+/* the running stitch: rounded stitches on a marked line, sewn in orange down to the next step
+   as that step's row is woven (clip, not scale, so the stitches never stretch) */
+.hw-under {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='18'%3E%3Crect y='2' width='2' height='9' rx='1' fill='%23d3d3da'/%3E%3C/svg%3E")
+    repeat-y top / 2px 18px;
+}
+.hw-thread {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='3' height='18'%3E%3Crect y='1' width='3' height='11' rx='1.5' fill='%23f2541b'/%3E%3C/svg%3E")
+    repeat-y top / 3px 18px;
+  clip-path: inset(0 0 calc((1 - clamp(0, var(--hw-p, 0) - var(--i), 1)) * 100%) 0);
+}
+.hw-seg > span:first-child {
+  color: var(--muted);
+}
+.hw-seg[data-state="now"] > span:first-child {
+  color: var(--ink);
+}
+.hw-seg[data-state="done"] > span:first-child {
+  color: var(--graphite);
+}
+.hw-seg-fill {
+  background: var(--ink);
+  transform: scaleX(clamp(0, var(--hw-p, 0) - var(--i), 1));
+}
+.hw-seg[data-state="now"] .hw-seg-fill {
+  background: var(--signal);
+}
+.hw-live {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.96);
+  transition:
+    opacity 0.35s ease,
+    transform 0.5s var(--ease-out-expo);
+}
+.hw-live[data-on="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Stage cards share one grid cell and cross-fade: the outgoing card leaves
+   fast, the incoming one arrives slightly late (its timeline plays the rest). */
+.hw-card {
+  transition:
+    opacity 0.45s var(--ease-out-expo) 0.12s,
+    visibility 0s linear 0s;
+}
+.hw-card[data-state="inactive"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.16s ease-out,
+    visibility 0s linear 0.16s;
+}
+
+/* ------------------------------------------------------------------
+   Who does the work — the page's one black band. The light tokens are
+   re-pointed inside it, so shared parts (Stitch, Rails, Rule, Cross,
+   LiveDot, Check, Spinner) draw light-on-dark with no variants.
+   .ops-light flips a block back to the light system (the portfolio sheet).
+------------------------------------------------------------------- */
+.ops-band {
+  --canvas: #0a0a0c;
+  --surface: #18181d;
+  --sunken: #212127;
+  --line: rgb(255 255 255 / 0.07);
+  --line-strong: rgb(255 255 255 / 0.13);
+  --rail: rgb(255 255 255 / 0.08);
+  --ink: #f4f4f6;
+  --graphite: #a1a1ac;
+  --muted: #6b6b77;
+  --signal-deep: #ff8452;
+  --signal-soft: rgb(242 84 27 / 0.16);
+  color-scheme: dark;
+  background: var(--canvas);
+  color: var(--ink);
+}
+.ops-band ::selection {
+  background: rgb(242 84 27 / 0.3);
+  color: #fff;
+}
+.ops-light {
+  --surface: #ffffff;
+  --sunken: #f3f3f5;
+  --line: #ececf0;
+  --line-strong: #d9d9df;
+  --ink: #16161b;
+  --graphite: #5c5c68;
+  --muted: #8b8b96;
+  --signal-deep: #d9400c;
+  --signal-soft: #ffe9df;
+  color-scheme: light;
+  color: var(--ink);
+}
+/* light falling on the band from above, in the signal hue */
+.ops-glow {
+  background: radial-gradient(44% 100% at 50% 0%, rgb(242 84 27 / 0.16) 0%, rgb(242 84 27 / 0.05) 42%, transparent 72%);
+}
+
+.ops-card {
+  --mx: 50%;
+  --my: 0%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #141418 0%, #0f0f12 100%);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.07),
+    inset 0 1px 0 rgb(255 255 255 / 0.05);
+  transition: box-shadow 0.4s ease;
+}
+/* pointer spotlight: under the content, above the card ground (script writes --mx / --my) */
+.ops-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(440px circle at var(--mx) var(--my), rgb(255 255 255 / 0.06), transparent 62%);
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+/* the proof card: an ember glow rising under the portfolio sheet */
+.ops-ember {
+  background:
+    radial-gradient(115% 72% at 50% 108%, #ff6a2a 0%, #e5480f 26%, rgb(176 52 10 / 0.85) 50%, rgb(70 22 8 / 0) 82%),
+    linear-gradient(180deg, #170e0b 0%, #26120b 100%);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 150 100 / 0.16),
+    inset 0 1px 0 rgb(255 255 255 / 0.07);
+}
+.ops-ember::before {
+  background: radial-gradient(440px circle at var(--mx) var(--my), rgb(255 190 150 / 0.09), transparent 62%);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ops-card:hover {
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.13),
+      inset 0 1px 0 rgb(255 255 255 / 0.07);
+  }
+  .ops-ember:hover {
+    box-shadow:
+      inset 0 0 0 1px rgb(255 160 110 / 0.3),
+      inset 0 1px 0 rgb(255 255 255 / 0.09);
+  }
+  .ops-card:hover::before {
+    opacity: 1;
+  }
+}
+
+/* windows inside the cards (they bleed off the right edge, Linear-style) */
+.ops-panel {
+  background: linear-gradient(180deg, #1b1b20 0%, #16161a 100%);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 30px 60px -30px rgb(0 0 0 / 0.75);
+}
+.ops-pop {
+  background: #212127;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.1),
+    0 22px 44px -14px rgb(0 0 0 / 0.85);
+}
+
+/* The crew orbit. --r is the crew's orbit radius; rings are drawn at
+   multiples of it (--k), spokes run from the lead out to each chip. */
+.ops-orbit {
+  --r: 96px;
+  /* rings dissolve into the card instead of ending on a hard cut */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 12%, #000 86%, transparent 100%);
+}
+@media (min-width: 48rem) {
+  .ops-orbit {
+    --r: 116px;
+  }
+}
+@media (min-width: 64rem) {
+  .ops-orbit {
+    --r: 120px;
+  }
+}
+.ops-ring {
+  position: absolute;
+  left: calc(50% - var(--r) * var(--k));
+  top: calc(50% - var(--r) * var(--k));
+  width: calc(var(--r) * var(--k) * 2);
+  height: calc(var(--r) * var(--k) * 2);
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.075);
+  pointer-events: none;
+}
+.ops-spoke {
+  position: absolute;
+  left: 0;
+  top: -0.5px;
+  width: var(--r);
+  height: 1px;
+  transform-origin: 0 50%;
+  transform: rotate(var(--a));
+}
+.ops-spoke-line {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  background-image: linear-gradient(to right, rgb(255 255 255 / 0.22) 50%, transparent 50%);
+  background-size: 6px 1px;
+}
+/* work travelling in to the lead: a signal bead riding the spoke (script slides it) */
+.ops-travel {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  opacity: 0;
+}
+.ops-travel::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: -2.5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--signal);
+  box-shadow:
+    0 0 0 3px rgb(242 84 27 / 0.2),
+    0 0 14px rgb(242 84 27 / 0.65);
+}
+/* the spoke's far end; un-rotated so the chip reads upright */
+.ops-tip {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  rotate: calc(var(--a) * -1);
+}
+} /* end @layer components */
+
+/* Calculator sliders show focus on the thumb instead (unlayered: it must beat the global :focus-visible). */
+.calc-range:focus-visible {
+  outline: none;
+}
+
+/* Elements revealed by the intro timeline start hidden only when JS runs. */
+.js-intro [data-intro] {
+  visibility: hidden;
+  /* failsafe: never leave content hidden if the intro script fails */
+  animation: intro-failsafe 0s linear 3.5s forwards;
+}
+@keyframes intro-failsafe {
+  to {
+    visibility: visible;
+  }
+}
+
+/* ------------------------------------------------------------------
+   What we build — tab panels share one grid cell on desktop and
+   cross-fade (outgoing fast, incoming slower and slightly late, so the
+   two never read as one muddle). Unlayered on purpose: it must beat the
+   panel's display utilities. Below lg only the active panel renders.
+------------------------------------------------------------------- */
+@media (min-width: 64rem) {
+  .wb-panel {
+    transition:
+      opacity 0.5s var(--ease-out-expo) 0.12s,
+      visibility 0s linear 0s;
+  }
+  .wb-panel[data-state="inactive"] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.16s ease-out,
+      visibility 0s linear 0.16s;
+  }
+}
+/* An ordinary Tuesday — industry logs (and their track markers) share one
+   grid cell and cross-fade the same way the service panels do. */
+.day-panel,
+.day-markers {
+  transition:
+    opacity 0.45s var(--ease-out-expo) 0.1s,
+    visibility 0s linear 0s;
+}
+.day-panel[data-active="false"],
+.day-markers[data-active="false"] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.15s ease-out,
+    visibility 0s linear 0.15s;
+}
+/* Unpinned on a wide screen: the console rides beside the log instead. */
+@media (min-width: 64rem) {
+  .day-board[data-mode="scroll"] .day-console {
+    position: sticky;
+    top: 1.5rem;
+    align-self: start;
+  }
+}
+
+.wb-spin {
+  animation: wb-spin 1.1s linear infinite;
+}
+.wb-ping {
+  animation: wb-ping 1.8s var(--ease-out-expo) infinite;
+}
+@keyframes wb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes wb-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .wb-spin,
+  .wb-ping {
+    animation: none;
+  }
+  .wb-ping {
+    opacity: 0;
+  }
+  .day-row[data-current="true"] .day-node::before {
+    animation: none;
+    opacity: 0;
+  }
+}
