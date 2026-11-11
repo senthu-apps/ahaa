@@ -7,7 +7,7 @@ import { ParticleWordmark } from "@/components/brand/ParticleWordmark";
 import { RailMarks, Rails, Rule } from "@/components/site/Rails";
 import { FOOTER } from "@/components/v2/content";
 
-/** Links whose pages don't exist yet (Privacy, Terms) or whose URLs aren't supplied (social). */
+/** Links whose URLs aren't supplied yet (social). */
 const toCome = (e: React.MouseEvent) => e.preventDefault();
 
 /**
@@ -16,7 +16,9 @@ const toCome = (e: React.MouseEvent) => e.preventDefault();
  * (The live footer's "Ready to weave" call to action isn't in the doc; the
  * booking section right above does that job.)
  */
-export function Footer() {
+export function Footer({ base = "" }: { base?: string }) {
+  // on other pages (/privacy, /terms), in-page anchors point back to the landing page
+  const at = (href: string) => (href.startsWith("#") ? base + href : href);
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -51,7 +53,7 @@ export function Footer() {
         {links.map((l) => (
           <li key={l.label}>
             <a
-              href={l.href ?? "#"}
+              href={l.href ? at(l.href) : "#"}
               onClick={l.href ? undefined : toCome}
               title={l.href ? undefined : "Link to come"}
               className="foot-link text-[0.9375rem]"
@@ -73,7 +75,7 @@ export function Footer() {
       <div className="relative mx-auto max-w-[1240px] px-5 md:px-6">
         <div className="grid gap-12 pb-14 pt-20 md:px-8 md:pb-16 md:pt-24 lg:grid-cols-12 lg:gap-14 lg:px-10">
           <div data-foot-rise className="lg:col-span-5">
-            <a href="#top" aria-label="AI Weavers home" className="inline-flex rounded-lg">
+            <a href={base || "#top"} aria-label="AI Weavers home" className="inline-flex rounded-lg">
               <Wordmark />
             </a>
             <p className="mt-6 max-w-[40ch] text-pretty text-[0.9375rem] leading-[1.65] text-graphite">
@@ -93,10 +95,7 @@ export function Footer() {
           </div>
           <nav data-foot-rise aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7">
             {col("Navigation", FOOTER.nav)}
-            {col(
-              "Legal",
-              FOOTER.legal.map((label) => ({ label })),
-            )}
+            {col("Legal", FOOTER.legal)}
             {col(
               "Social",
               FOOTER.social.map((label) => ({ label })),
