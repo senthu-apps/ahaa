@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type ReactNode } from "react";
-import { siAirtable, siHubspot, siNotion, siQuickbooks, siShopify, siStripe, siXero } from "simple-icons";
+import { siAirtable, siAsana, siClickup, siGoogleanalytics, siHubspot, siNotion, siQuickbooks, siShopify, siStripe, siXero, siZendesk } from "simple-icons";
 import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion } from "@/lib/gsap";
 import { RailMarks } from "@/components/site/Rails";
 import { INTEGRATIONS } from "@/components/v2/content";
@@ -29,6 +29,10 @@ const MARKS: Record<string, ReactNode> = {
   Shopify: si(siShopify),
   Airtable: si(siAirtable),
   Notion: si(siNotion),
+  Asana: si(siAsana),
+  ClickUp: si(siClickup),
+  "Google Analytics": si(siGoogleanalytics),
+  Zendesk: si(siZendesk),
   "Google Workspace": (
     <svg viewBox="0 0 48 48" className="size-[28px] shrink-0" aria-hidden="true">
       <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
@@ -89,7 +93,46 @@ const MARKS: Record<string, ReactNode> = {
    Files live in this folder's logos/ and are inlined at build (see build.mjs). */
 const WORDMARKS: Record<string, { src: string; alt: string; h: number }> = {
   "Agent360.io": { src: "/logos/agent360.svg", alt: "Agent360", h: 34 },
+  /* supplied 2026-11-11 */
+  Finmo: { src: "/logos/tools/finmo.png", alt: "Finmo", h: 24 },
+  PCLaw: { src: "/logos/tools/pclaw.png", alt: "PCLaw", h: 36 },
 };
+
+/* The booking form's industry tools: each brand's own app icon, taken from its website
+   (public/logos/tools, Nov 2026). Stand-ins until approved artwork arrives. Finmo and
+   PCLaw use supplied wordmarks instead (WORDMARKS). */
+const ICONS: Record<string, string> = {
+  "Lone Wolf": "lone-wolf.png",
+  BrokerBay: "brokerbay.png",
+  Lofty: "lofty.png",
+  WEBForms: "webforms.png",
+  DocuSign: "docusign.png",
+  "Filogix Expert": "filogix.png",
+  Velocity: "velocity.png",
+  GoHighLevel: "gohighlevel.png",
+  Clio: "clio.png",
+  LEAP: "leap.png",
+  Teraview: "teraview.png",
+  Monday: "monday.png",
+  Harvest: "harvest.png",
+  Recharge: "recharge.webp",
+  Skio: "skio.png",
+  Gorgias: "gorgias.png",
+  Klaviyo: "klaviyo.png",
+  ShipStation: "shipstation.svg",
+  Dext: "dext.png",
+  Hubdoc: "hubdoc.png",
+  TaxCycle: "taxcycle.png",
+  Karbon: "karbon.png",
+  Jobber: "jobber.png",
+  "Housecall Pro": "housecallpro.png",
+  ServiceTitan: "servicetitan.png",
+  "Google Business Profile": "google-business.png",
+};
+const icon = (file: string) => (
+  // eslint-disable-next-line @next/next/no-img-element -- a 28px static icon; next/image adds nothing here
+  <img src={`/logos/tools/${file}`} alt="" width={28} height={28} className="size-[28px] shrink-0 rounded-[6px] object-contain" />
+);
 
 const SPEED = 38; // px per second
 
@@ -104,7 +147,7 @@ function Mark({ name }: { name: string }) {
     );
   return (
     <li className="int-logo flex shrink-0 items-center gap-3 pr-[clamp(2.25rem,4.5vw,4rem)]">
-      {MARKS[name] ?? (
+      {MARKS[name] ?? (ICONS[name] ? icon(ICONS[name]) : null) ?? (
         <span aria-hidden className="grid size-[28px] shrink-0 place-items-center rounded-[7px] border-[1.5px] border-current text-[0.8125rem] font-bold leading-none">
           {name[0]}
         </span>

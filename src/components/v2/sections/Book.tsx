@@ -5,6 +5,7 @@ import { LogoMark } from "@/components/brand/LogoMark";
 import { Cross, Rule } from "@/components/site/Rails";
 import { BOOKING } from "@/components/v2/content";
 import { EMAIL, SUBMIT, TIME_SINKS } from "@/components/book/book";
+import { BUSINESS_LIMIT, INDUSTRIES, MAX_PAINS, REVENUE, ROLES, type IndustryKey } from "@/components/book/industries";
 import { Arrow, FaceSwap, SectionHead, refreshSoon, useReveal } from "@/components/v2/parts";
 
 /* ------------------------------------------------------------------ */
@@ -15,6 +16,7 @@ import { Arrow, FaceSwap, SectionHead, refreshSoon, useReveal } from "@/componen
 /* ------------------------------------------------------------------ */
 
 const S = BOOKING.scheduler;
+const B = S.business;
 /** Bookable window: from tomorrow, this many days out. */
 const WINDOW_DAYS = 28;
 const WEEKDAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
@@ -132,16 +134,31 @@ function Picker({
   options,
   placeholder,
   invalid,
+  multi,
+  max,
+  compact,
+  describedBy,
   onChange,
 }: {
   id: string;
   name: string;
-  value: string;
+  /** one value, or the ticked values when `multi` */
+  value: string | readonly string[];
   options: readonly string[];
   placeholder: string;
   invalid?: boolean;
+  /** tick several; the list stays open and onChange gets the option to toggle */
+  multi?: boolean;
+  /** with `multi`: no more than this many */
+  max?: number;
+  /** the shorter field used on the booking's business step */
+  compact?: boolean;
+  describedBy?: string;
   onChange: (v: string) => void;
 }) {
+  const picked: readonly string[] = typeof value === "string" ? (value ? [value] : []) : value;
+  const full = (o: string) => !!max && !picked.includes(o) && picked.length >= max;
+  const shown = picked.length === 0 ? placeholder : picked.length === 1 ? picked[0] : `${picked[0]} +${picked.length - 1} more`;
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1); // the row the keyboard (or pointer) is on
   const [up, setUp] = useState(false); // the list opens above the field when the viewport has more room there
@@ -169,11 +186,13 @@ function Picker({
       const below = window.innerHeight - r.bottom;
       setUp(below < MENU_ROOM && r.top > below);
     }
-    setActive(Math.max(options.indexOf(value), 0));
+    setActive(Math.max(options.indexOf(picked[0] ?? ""), 0));
     setOpen(true);
   };
   const choose = (i: number) => {
+    if (full(options[i])) return;
     onChange(options[i]);
+    if (multi) return; // keep ticking
     setOpen(false);
     trigger.current?.focus();
   };
@@ -222,7 +241,7 @@ function Picker({
 
   return (
     <div ref={root} className="book-control">
-      <input type="hidden" name={name} value={value} />
+      <input type="hidden" name={name} value={picked.join(", ")} />
       <button
         ref={trigger}
         type="button"
@@ -233,12 +252,13 @@ function Picker({
         aria-controls={open ? listId : undefined}
         aria-activedescendant={open && active >= 0 ? `${id}-opt-${active}` : undefined}
         aria-invalid={invalid || undefined}
-        data-empty={!value || undefined}
+        aria-describedby={describedBy}
+        data-empty={picked.length === 0 || undefined}
         onClick={() => (open ? setOpen(false) : show())}
         onKeyDown={onKey}
-        className="book-input book-select text-left"
+        className={`book-input book-select text-left ${compact ? "book-input-sm" : ""}`}
       >
-        <span className="block truncate">{value || placeholder}</span>
+        <span className="block truncate">{shown}</span>
       </button>
       {/* the design's chevron (akar-icons chevron-down-small, public/icons); it turns while the list is open */}
       {/* eslint-disable-next-line @next/next/no-img-element -- a 16px static SVG; next/image adds nothing here */}
@@ -250,22 +270,42 @@ function Picker({
         className={`pointer-events-none absolute right-[15px] top-1/2 -translate-y-1/2 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
       />
       {open && (
-        <ul id={listId} role="listbox" aria-labelledby={id} data-up={up || undefined} className="sched-menu">
-          {options.map((o, i) => (
-            <li
-              key={o}
-              id={`${id}-opt-${i}`}
-              role="option"
-              aria-selected={o === value}
-              data-active={i === active || undefined}
-              onPointerMove={() => setActive(i)}
-              onClick={() => choose(i)}
-              className="sched-option"
-            >
-              <span>{o}</span>
-              {o === value && <Check className="size-3.5 shrink-0" />}
-            </li>
-          ))}
+        <ul
+          id={listId}
+          role="listbox"
+          aria-labelledby={id}
+          aria-multiselectable={multi || undefined}
+          data-up={up || undefined}
+          className={`sched-menu ${compact ? "sched-menu-sm" : ""}`}
+        >
+          {options.map((o, i) => {
+            const on = picked.includes(o);
+            return (
+              <li
+                key={o}
+                id={`${id}-opt-${i}`}
+                role="option"
+                aria-selected={on}
+                aria-disabled={full(o) || undefined}
+                data-active={i === active || undefined}
+                onPointerMove={() => setActive(i)}
+                onClick={() => choose(i)}
+                className="sched-option"
+              >
+                {multi ? (
+                  <span className="flex items-center gap-2.5">
+                    <span aria-hidden className="bk-box">
+                      {on && <Check className="size-2.5" />}
+                    </span>
+                    {o}
+                  </span>
+                ) : (
+                  <span>{o}</span>
+                )}
+                {!multi && on && <Check className="size-3.5 shrink-0" />}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
@@ -307,11 +347,87 @@ function TopicField({ id, label, value, error, onChange }: { id: string; label: 
   );
 }
 
+/**
+ * A labelled dropdown for the business step: one choice, or several with
+ * `multi` (`max` caps them). onChange gets a toggle to apply to the latest list.
+ */
+function Choice({
+  id,
+  label,
+  note,
+  options,
+  value,
+  multi,
+  max,
+  error,
+  placeholder,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  note?: string;
+  options: readonly string[];
+  value: readonly string[];
+  multi?: boolean;
+  max?: number;
+  error?: string;
+  placeholder?: string;
+  onChange: (next: (prev: string[]) => string[]) => void;
+}) {
+  const toggle = (o: string) => (prev: string[]) =>
+    !multi ? [o] : prev.includes(o) ? prev.filter((x) => x !== o) : max && prev.length >= max ? prev : [...prev, o];
+  return (
+    <div>
+      <label htmlFor={id} className="book-label">
+        <span>{label}</span>
+        {note && <span className="book-opt">{note}</span>}
+      </label>
+      <Picker
+        id={id}
+        name={id}
+        value={value}
+        options={options}
+        placeholder={placeholder ?? (multi ? B.pickAny : B.pickOne)}
+        multi={multi}
+        max={max}
+        compact
+        invalid={!!error}
+        describedBy={error ? `${id}-e` : undefined}
+        onChange={(o) => onChange(toggle(o))}
+      />
+      {error && (
+        <p id={`${id}-e`} className="book-err">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** Where the visitor is: Time → Your details → Your business. */
+function Stepper({ at }: { at: number }) {
+  return (
+    <ol aria-label="Booking steps" className="mb-6 flex flex-wrap items-center gap-x-2 gap-y-2">
+      {S.steps.map((name, i) => (
+        <li key={name} aria-current={i === at ? "step" : undefined} data-state={i < at ? "done" : i === at ? "now" : "next"} className="bk-stepper">
+          <span className="bk-dot">{i < at ? <Check className="size-2.5" /> : i + 1}</span>
+          <span className={i === at ? undefined : "max-sm:sr-only"}>{name}</span>
+          {i < S.steps.length - 1 && <span aria-hidden className="bk-bar" />}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* Scheduler                                                            */
 /* ------------------------------------------------------------------ */
 
-type Step = "pick" | "details" | "done";
+type Step = "pick" | "details" | "business" | "done";
+type Person = { first: string; last: string; email: string; company: string; site: string };
+type Biz = { key: IndustryKey | ""; about: string; role: string; team: string; extra: string[]; pains: string[]; tools: string[]; revenue: string };
+type BizErr = keyof typeof B.errors;
+const EMPTY_BIZ: Biz = { key: "", about: "", role: "", team: "", extra: [], pains: [], tools: [], revenue: "" };
 
 function Scheduler({ today, avail, onPick }: { today: Date; avail: ReturnType<typeof useAvailability>; onPick: (p: number) => void }) {
   const byDay = useMemo(() => {
@@ -339,14 +455,17 @@ function Scheduler({ today, avail, onPick }: { today: Date; avail: ReturnType<ty
   const [err, setErr] = useState<string | null>(null);
   const [errs, setErrs] = useState<Partial<Record<Who, string>>>({});
   const [email, setEmail] = useState("");
-  const [topic, setTopic] = useState(""); // "What would you like to automate?" (Picker)
+  const [who, setWho] = useState<Person>({ first: "", last: "", email: "", company: "", site: "" }); // step 2, kept for Back
+  const [biz, setBiz] = useState<Biz>(EMPTY_BIZ); // step 3
+  const [berrs, setBerrs] = useState<Partial<Record<BizErr, string>>>({});
+  const bot = useRef(false); // the honeypot on step 2 was filled
 
-  useEffect(() => onPick(step === "done" ? 1 : step === "details" ? 0.66 : slot ? 0.5 : 0.33), [step, slot, onPick]);
+  useEffect(() => onPick(step === "done" ? 1 : step === "business" ? 0.8 : step === "details" ? 0.55 : slot ? 0.33 : 0.2), [step, slot, onPick]);
   // the sheet changes height between steps: let the scroll-driven reveals re-measure
   useEffect(() => refreshSoon(), [step, avail.status]);
   useEffect(() => {
-    if (step !== "details") return;
-    const t = window.setTimeout(() => document.getElementById("bk-first")?.focus({ preventScroll: true }), 350);
+    if (step !== "details" && step !== "business") return;
+    const t = window.setTimeout(() => document.getElementById(step === "details" ? "bk-first" : "bk-industry")?.focus({ preventScroll: true }), 350);
     return () => window.clearTimeout(t);
   }, [step]);
 
@@ -369,21 +488,60 @@ function Scheduler({ today, avail, onPick }: { today: Date; avail: ReturnType<ty
     setSlot(null);
     setErr(null);
     setErrs({});
-    setTopic("");
+    setBerrs({});
   };
 
-  const confirm = async (e: FormEvent<HTMLFormElement>) => {
+  /* step 2 → 3: check who is coming, keep it, move on */
+  const toBusiness = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!slot) return;
     const d = new FormData(e.currentTarget);
     const v = (k: string) => String(d.get(k) ?? "").trim();
     const next: Partial<Record<Who, string>> = {};
     if (!v("first")) next.first = "Add your first name.";
     if (!EMAIL.test(v("email"))) next.email = "Enter a work email, like you@company.com.";
     if (!v("company")) next.company = "Add your company name.";
-    if (!v("topic")) next.topic = "Pick the closest match.";
     setErrs(next);
     if (Object.keys(next).length) return;
+    bot.current = !!v("website");
+    setWho({ first: v("first"), last: v("last"), email: v("email"), company: v("company"), site: v("site") });
+    setStep("business");
+  };
+
+  const ind = INDUSTRIES.find((i) => i.key === biz.key);
+  const setB = (patch: Partial<Biz>, clear?: BizErr) => {
+    setBiz((b) => ({ ...b, ...patch }));
+    if (clear) setBerrs((e) => ({ ...e, [clear]: undefined }));
+  };
+  type ListKey = "extra" | "pains" | "tools";
+  type OneKey = "role" | "team" | "revenue";
+  const list = (k: ListKey, clear?: BizErr) => (fn: (prev: string[]) => string[]) => {
+    setBiz((b) => ({ ...b, [k]: fn(b[k]) }));
+    if (clear) setBerrs((e) => ({ ...e, [clear]: undefined }));
+  };
+  const one = (k: OneKey, clear?: BizErr) => (fn: (prev: string[]) => string[]) => {
+    setBiz((b) => ({ ...b, [k]: fn(b[k] ? [b[k]] : [])[0] ?? "" }));
+    if (clear) setBerrs((e) => ({ ...e, [clear]: undefined }));
+  };
+  // a new industry brings its own bands, pains and tools: clear those, keep the rest
+  const pickIndustry = (key: IndustryKey) => {
+    setBiz((b) => (b.key === key ? b : { ...b, key, team: "", extra: [], pains: [], tools: [] }));
+    setBerrs({});
+  };
+
+  /* step 3: book it */
+  const confirm = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!slot) return;
+    const next: Partial<Record<BizErr, string>> = {};
+    if (!ind) next.industry = B.errors.industry;
+    else {
+      if (ind.key === "other" && !biz.about.trim()) next.about = B.errors.about;
+      if (!biz.role) next.role = B.errors.role;
+      if (!biz.team) next.team = B.errors.team;
+      if (!biz.pains.length) next.pains = B.errors.pains;
+    }
+    setBerrs(next);
+    if (!ind || Object.keys(next).length) return;
     setBusy(true);
     setErr(null);
     try {
@@ -393,22 +551,23 @@ function Scheduler({ today, avail, onPick }: { today: Date; avail: ReturnType<ty
         body: JSON.stringify({
           start: slot.toISOString(),
           tz: avail.tz,
-          name: [v("first"), v("last")].filter(Boolean).join(" "),
-          email: v("email"),
-          company: v("company"),
-          topic: v("topic"),
-          website: v("website"),
+          name: [who.first, who.last].filter(Boolean).join(" "),
+          email: who.email,
+          company: who.company,
+          site: who.site,
+          business: { industry: ind.label, about: biz.about.trim(), role: biz.role, team: biz.team, extra: biz.extra, pains: biz.pains, tools: biz.tools, revenue: biz.revenue },
+          website: bot.current ? "1" : "",
         }),
       });
       if (res.status === 409) {
-        // somebody took the slot meanwhile: back to the calendar, with fresh times
+        // somebody took the slot meanwhile: back to the calendar, with fresh times (answers kept)
         reset();
         setErr(S.taken);
         avail.reload();
         return;
       }
       if (!res.ok) throw new Error(`schedule answered ${res.status}`);
-      setEmail(v("email"));
+      setEmail(who.email);
       setStep("done");
     } catch {
       setErr(SUBMIT.error);
@@ -445,68 +604,140 @@ function Scheduler({ today, avail, onPick }: { today: Date; avail: ReturnType<ty
       </div>
     );
 
-  /* who is coming */
-  if (step === "details" && slot)
-    return (
-      <form noValidate onSubmit={confirm} aria-label={S.confirm}>
-        {/* the chosen slot, as a panel */}
-        <div className="rounded-[12px] bg-sunken px-3.5 py-3">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-            <p className="text-[1.125rem] font-semibold tracking-[-0.02em] text-ink">
-              {fmtDay(slot)} · {fmtTime(slot)}
-            </p>
-            <button type="button" onClick={reset} className="text-[0.875rem] font-medium text-ink underline underline-offset-4">
-              {S.change}
-            </button>
-          </div>
-          <p className="mt-1 text-[0.8125rem] text-muted">
-            {meta} · {zone}
-          </p>
+  /* the chosen slot, as a panel, over steps 2 and 3 */
+  const slotPanel = slot && (
+    <div className="rounded-[12px] bg-sunken px-3.5 py-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+        <p className="text-[1.125rem] font-semibold tracking-[-0.02em] text-ink">
+          {fmtDay(slot)} · {fmtTime(slot)}
+        </p>
+        <button type="button" onClick={reset} className="text-[0.875rem] font-medium text-ink underline underline-offset-4">
+          {S.change}
+        </button>
+      </div>
+      <p className="mt-1 text-[0.8125rem] text-muted">
+        {meta} · {zone}
+      </p>
+    </div>
+  );
+
+  /* step 2 · who is coming */
+  const detailsView = (
+    <form noValidate onSubmit={toBusiness} aria-label={S.fields.title}>
+      {slotPanel}
+      <div className="mt-7 grid gap-x-5 gap-y-5 md:grid-cols-2">
+        <TextField id="bk-first" name="first" label={S.fields.first} error={errs.first} defaultValue={who.first} autoComplete="given-name" placeholder="First name" maxLength={60} />
+        <TextField id="bk-last" name="last" label={S.fields.last} defaultValue={who.last} autoComplete="family-name" placeholder="Last name" maxLength={60} />
+        <div className="md:col-span-2">
+          <TextField id="bk-email" name="email" label={S.fields.email} error={errs.email} defaultValue={who.email} type="email" autoComplete="email" placeholder="you@company.com" maxLength={254} />
         </div>
-        <div className="mt-7 grid gap-x-5 gap-y-5 md:grid-cols-2">
-          <TextField id="bk-first" name="first" label={S.fields.first} error={errs.first} autoComplete="given-name" placeholder="First name" maxLength={60} />
-          <TextField id="bk-last" name="last" label={S.fields.last} autoComplete="family-name" placeholder="Last name" maxLength={60} />
-          <div className="md:col-span-2">
-            <TextField id="bk-email" name="email" label={S.fields.email} error={errs.email} type="email" autoComplete="email" placeholder="you@company.com" maxLength={254} />
+        <TextField id="bk-company" name="company" label={S.fields.company} error={errs.company} defaultValue={who.company} autoComplete="organization" placeholder="Business name" maxLength={160} />
+        <TextField id="bk-site" name="site" label={S.fields.site} defaultValue={who.site} type="url" inputMode="url" autoComplete="url" placeholder={S.sitePlaceholder} maxLength={200} />
+        {/* honeypot: hidden from people, filled in by bots */}
+        <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
+      </div>
+      <div className="mt-8 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-[0.8125rem] text-muted">{S.detailsHint}</p>
+        <button type="submit" className="btn btn-primary shrink-0">
+          {S.continue}
+          <span className="btn-icon">
+            <Arrow white />
+          </span>
+        </button>
+      </div>
+    </form>
+  );
+
+  /* step 3 · the business, asked in its own industry's terms */
+  const businessView = (
+    <form noValidate onSubmit={confirm} aria-label={S.confirm}>
+      {slotPanel}
+      <div className="mt-6 grid gap-5">
+        <Choice
+          id="bk-industry"
+          label={B.industry}
+          options={INDUSTRIES.map((i) => i.label)}
+          value={ind ? [ind.label] : []}
+          error={berrs.industry}
+          onChange={(toggle) => {
+            const key = INDUSTRIES.find((i) => i.label === toggle([])[0])?.key;
+            if (key) pickIndustry(key);
+          }}
+        />
+        {ind ? (
+          <div key={ind.key} className="bk-step grid gap-5">
+            {ind.key === "other" && (
+              <div>
+                <label htmlFor="bk-about" className="book-label">
+                  {B.about}
+                </label>
+                <div className="book-control">
+                  <input
+                    id="bk-about"
+                    className="book-input book-input-sm"
+                    value={biz.about}
+                    onChange={(e) => setB({ about: e.target.value }, "about")}
+                    placeholder={B.aboutPlaceholder}
+                    maxLength={BUSINESS_LIMIT}
+                    aria-invalid={berrs.about ? true : undefined}
+                  />
+                </div>
+                {berrs.about && <p className="book-err">{berrs.about}</p>}
+              </div>
+            )}
+            <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">
+              <Choice id="bk-role" label={B.role} options={ROLES} value={biz.role ? [biz.role] : []} error={berrs.role} onChange={one("role", "role")} />
+              <Choice id="bk-team" label={ind.team.label} options={ind.team.options} value={biz.team ? [biz.team] : []} error={berrs.team} onChange={one("team", "team")} />
+              {ind.extra.label && (
+                <Choice id="bk-extra" label={ind.extra.label} note={B.optional} options={ind.extra.options} multi={ind.extra.multi} value={biz.extra} onChange={list("extra")} />
+              )}
+              <Choice id="bk-rev" label={B.revenue} note={B.optional} options={REVENUE} value={biz.revenue ? [biz.revenue] : []} onChange={one("revenue")} />
+              <div className="sm:col-span-2">
+                <Choice
+                  id="bk-pains"
+                  label={B.pains}
+                  note={`${B.upTo} ${MAX_PAINS}`}
+                  options={ind.pains}
+                  multi
+                  max={MAX_PAINS}
+                  value={biz.pains}
+                  error={berrs.pains}
+                  placeholder={B.painsPlaceholder}
+                  onChange={list("pains", "pains")}
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <Choice id="bk-tools" label={B.tools} note={B.optional} options={ind.tools} multi value={biz.tools} onChange={list("tools")} />
+              </div>
+            </div>
           </div>
-          <div className="md:col-span-2">
-            <TextField id="bk-company" name="company" label={S.fields.company} error={errs.company} autoComplete="organization" placeholder="Business name" maxLength={160} />
-          </div>
-          <div className="md:col-span-2">
-            <TopicField
-              id="bk-topic"
-              label={S.fields.topic}
-              value={topic}
-              error={errs.topic}
-              onChange={(v) => {
-                setTopic(v);
-                setErrs((e) => ({ ...e, topic: undefined }));
-              }}
-            />
-          </div>
-          {/* honeypot: hidden from people, filled in by bots */}
-          <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
-        </div>
-        <div className="mt-8 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+        ) : null}
+      </div>
+      <div className="mt-8 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-4">
+          <button type="button" onClick={() => setStep("details")} className="text-[0.875rem] font-medium text-ink underline underline-offset-4">
+            {S.back}
+          </button>
           {err ? (
-            <p role="alert" className="book-err">
+            <p role="alert" className="book-err !mt-0">
               {err}
             </p>
           ) : (
             <p className="text-[0.8125rem] text-muted">{S.hint}</p>
           )}
-          <button type="submit" disabled={busy} className="btn btn-primary shrink-0 disabled:opacity-60">
-            {busy ? S.booking : S.confirm}
-            <span className="btn-icon">
-              <Arrow white />
-            </span>
-          </button>
         </div>
-      </form>
-    );
+        <button type="submit" disabled={busy} className="btn btn-primary shrink-0 disabled:opacity-60">
+          {busy ? S.booking : S.confirm}
+          <span className="btn-icon">
+            <Arrow white />
+          </span>
+        </button>
+      </div>
+    </form>
+  );
 
-  /* pick a day and a time */
-  return (
+  /* step 1 · pick a day and a time */
+  const pickView = (
     <div>
       <div className="grid gap-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-10">
         {/* month */}
@@ -624,6 +855,16 @@ function Scheduler({ today, avail, onPick }: { today: Date; avail: ReturnType<ty
             <Arrow white />
           </span>
         </button>
+      </div>
+    </div>
+  );
+
+  const at = slot && step === "business" ? 2 : slot && step === "details" ? 1 : 0;
+  return (
+    <div>
+      <Stepper at={at} />
+      <div key={at} className="bk-step">
+        {at === 2 ? businessView : at === 1 ? detailsView : pickView}
       </div>
     </div>
   );

@@ -206,11 +206,11 @@ export function Team() {
             <figure data-rise className="ops-card team-card p-3">
               <div className="team-video relative aspect-video overflow-hidden rounded-[16px]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/people/senthu-b.jpg" alt="Senthu Velnayagam" className="team-video-photo absolute inset-0 size-full object-cover" />
+                <img src="/people/senthu-video-thumb.jpg" alt="Senthu Velnayagam" className="team-video-photo absolute left-[-43.27%] top-[-28%] h-[143.32%] w-[143.24%] max-w-none" />
                 <div aria-hidden className="team-video-shade absolute inset-0" />
                 <div aria-hidden className="team-video-grain absolute inset-0" />
                 <span className="absolute left-4 top-4 flex items-center gap-2 font-mono text-[0.6875rem] text-white/75">
-                  <LiveDot /> 66 sec
+                  <LiveDot /> 67 sec
                 </span>
                 <button
                   type="button"
@@ -224,8 +224,9 @@ export function Team() {
                   </svg>
                 </button>
               </div>
-              <figcaption className="px-2 pb-1.5 pt-3.5 text-[0.9375rem] text-white/80">
-                {TEAM.video.name} {TEAM.video.rest}
+              <figcaption className="px-2 pb-1.5 pt-3.5 leading-[22.5px]">
+                <span className="block text-[1rem] font-bold text-white">{TEAM.video.name}</span>
+                <span className="block text-[0.875rem] font-light text-white/80">{TEAM.video.caption}</span>
               </figcaption>
             </figure>
 

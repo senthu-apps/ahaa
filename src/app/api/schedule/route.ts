@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { EMAIL, LIMITS } from "@/components/book/book";
+import { BUSINESS_LIMIT, businessNotes, type Business } from "@/components/book/industries";
 import { createBooking, getAvailability, getEventInfo, isSlotTaken, lunacalConfig } from "@/lib/lunacal";
 
 /**
  * /api/schedule — the #book calendar's back end (LunaCal, see lib/lunacal.ts).
  *
  *   GET  ?from=ISO&to=ISO&tz=IANA                      → { configured, slots: ISO[], minutes, title }
- *   POST { start, tz, name, email, company?, notes? }  → { ok, uid } · 409 slot_taken
+ *   POST { start, tz, name, email, company, site?, business?, notes? }  → { ok, uid } · 409 slot_taken
+ *        business: step 3's answers (industry, role, team, pains…), written into the booking notes
  *
  * Without LUNACAL_API_KEY + LUNACAL_EVENT_TYPE_ID, GET answers { configured: false } (the
  * page then shows sample availability) and POST books nothing: accepted in development so
@@ -29,6 +31,23 @@ function parseDate(v: unknown): Date | null {
   const d = new Date(v);
   return Number.isNaN(d.getTime()) ? null : d;
 }
+/** Step 3's answers, cleaned: strings trimmed and capped, lists capped at 12. */
+function readBusiness(v: unknown): Business | null {
+  if (!v || typeof v !== "object") return null;
+  const o = v as Record<string, unknown>;
+  const one = (k: string) => (typeof o[k] === "string" ? (o[k] as string).trim().slice(0, BUSINESS_LIMIT) : "");
+  const many = (k: string) =>
+    Array.isArray(o[k])
+      ? (o[k] as unknown[])
+          .filter((x): x is string => typeof x === "string")
+          .map((x) => x.trim().slice(0, BUSINESS_LIMIT))
+          .filter(Boolean)
+          .slice(0, 12)
+      : [];
+  const b: Business = { industry: one("industry"), about: one("about"), role: one("role"), team: one("team"), extra: many("extra"), pains: many("pains"), tools: many("tools"), revenue: one("revenue") };
+  return b.industry ? b : null;
+}
+
 const bad = (error: string, status: number, extra: Record<string, unknown> = {}) => NextResponse.json({ ok: false, error, ...extra }, { status });
 
 export async function GET(req: Request) {
@@ -69,6 +88,8 @@ export async function POST(req: Request) {
   const email = str("email");
   const company = str("company");
   const notes = str("notes");
+  const site = str("site").slice(0, 200);
+  const business = readBusiness(src.business);
   const topic = str("topic"); // "What would you like to automate?" — one of book.ts TIME_SINKS, free text tolerated
 
   const errors: Record<string, string> = {};
@@ -86,7 +107,7 @@ export async function POST(req: Request) {
   const cfg = lunacalConfig();
   if (!cfg) {
     if (process.env.NODE_ENV !== "production") {
-      console.info("[schedule] LunaCal is not configured — sample booking, nothing was booked:", { start: start.toISOString(), tz, name, email, company, notes });
+      console.info("[schedule] LunaCal is not configured — sample booking, nothing was booked:", { start: start.toISOString(), tz, name, email, company, notes: business ? businessNotes(business, site) : notes });
       return NextResponse.json({ ok: true, sample: true });
     }
     console.error("[schedule] LUNACAL_API_KEY / LUNACAL_EVENT_TYPE_ID are not set — a booking could not be made.");
@@ -96,7 +117,7 @@ export async function POST(req: Request) {
   try {
     const event = await getEventInfo(cfg);
     // the host reads the topic in the booking's notes ("Is there anything else we should know…")
-    const hostNotes = [topic && `Wants to automate: ${topic}`, notes].filter(Boolean).join("\n\n");
+    const hostNotes = [business ? businessNotes(business, site) : site && `Website: ${site}`, topic && `Wants to automate: ${topic}`, notes].filter(Boolean).join("\n\n");
     const { uid } = await createBooking(cfg, { start, timeZone: tz, name, email, company, notes: hostNotes, event });
     return NextResponse.json({ ok: true, uid });
   } catch (err) {
